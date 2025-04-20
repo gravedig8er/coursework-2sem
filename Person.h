@@ -14,4 +14,12 @@ private:
   Discipline* DISCIPLINE; // дисциплины 
 
   Person* pNext; // указатель на следующего человека 
+
+public: 
+  void SetID(int ID);
+  void SetFIO(FullName* temp);
+  void SetDATE(int DATE);
+  void SetDIRECT(Direction* temp);
+  void SetGROUP(int GROUP);
+  Person* GetNext();
 };

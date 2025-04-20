@@ -5,4 +5,6 @@ class Direction {
 private:
   String str; 
   Direction* pNext; 
+public: 
+  void push_back(String temp);  
 };

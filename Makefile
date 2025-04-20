@@ -2,7 +2,7 @@ all: file
 
 file: main.o Person.o String.o FullName.o Direction.o Discipline.o DisciplineForm.o DisciplineNode.o Semestr.o Grade.o Database.o
 	g++ main.o Person.o String.o FullName.o Direction.o Discipline.o DisciplineForm.o DisciplineNode.o Semestr.o Grade.o -o file
-main.o: main.cpp Person.h
+main.o: main.cpp Person.h Database.h FullName.h
 	g++ -c main.cpp
 Person.o: Person.cpp FullName.h Direction.h Discipline.h
 	g++ -c Person.cpp 
