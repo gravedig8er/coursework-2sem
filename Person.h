@@ -16,10 +16,14 @@ private:
   Person* pNext; // указатель на следующего человека 
 
 public: 
+  Person();
+  Person(const Person& temp);
+  ~Person();
   void SetID(int ID);
   void SetFIO(FullName* temp);
   void SetDATE(int DATE);
   void SetDIRECT(Direction* temp);
   void SetGROUP(int GROUP);
+  void SetNext( Person*);
   Person* GetNext();
 };

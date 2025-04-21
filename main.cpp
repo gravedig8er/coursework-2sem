@@ -1,10 +1,10 @@
 #include <iostream> 
 #include <fstream>
 #include "Database.h"
+#include "MyFunctions.h"
 #include "Person.h"
 #include "FullName.h"
 
-void reset(char* str, int length);
 
 int main() {
   std::fstream students, out, protocol;
@@ -81,13 +81,7 @@ int main() {
    
     while (students.get(ch) && (ch == ' ' || ch == '\t' || ch == '\n' || ch == '\r')); // очистка конца строки
 
-    base.push_back(temp);
+    base.push_back(*temp);
     temp = temp->GetNext();
-  }
-}
-
-void reset(char* str, int length) {
-  for (int i = 0; i < length; i++) {
-    str[i] = '\0';
   }
 }

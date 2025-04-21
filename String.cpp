@@ -1,4 +1,5 @@
 #include "String.h"
+#include "MyFunctions.h"
 
 String::String() : line{}, length{0} {}
 
@@ -28,7 +29,7 @@ void String::SetLength(int length) {
 }
 
 String::String(const String& other) {
-  clear(line, N+1);
+  reset(line, N+1);
   this->length = other.length;
   line[length] = '\0';
 
@@ -39,7 +40,7 @@ String::String(const String& other) {
 
 void String::operator=(const String& other) {
   if (this != &other) {
-    clear(line, N+1);
+    reset(line, N+1);
     length = other.length;
     for (int i = 0; i < length; i++) {
         line[i] = other.line[i];

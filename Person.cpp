@@ -1,5 +1,39 @@
 #include "Person.h"
 
+Person::Person() {
+
+}
+
+Person::Person(const Person& temp) {
+  this->ID = temp.ID;
+  this->GROUP = temp.GROUP;
+  this->DATE = temp.DATE;
+
+  if (temp.FIO) {
+    this->FIO = new FullName(*temp.FIO); 
+  } 
+  else {
+    this->FIO = nullptr;
+  }
+
+  if (temp.DIRECT) {
+    this->DIRECT = new Direction(*temp.DIRECT);  
+  } 
+  else {
+    this->DIRECT = nullptr;
+  }
+
+  if (temp.DISCIPLINE) {
+    this->DISCIPLINE = new Discipline(*temp.DISCIPLINE);  
+  } 
+  else {
+    this->DISCIPLINE = nullptr;
+  }
+
+  this->pNext = nullptr;  
+}
+
+
 void Person::SetID(int ID) {
   this->ID = ID;
 }
@@ -22,4 +56,8 @@ void Person::SetGROUP(int GROUP) {
 
 Person* Person::GetNext() {
   return pNext;
+}
+
+void Person::SetNext(Person* temp) {
+  this->pNext = temp;
 }

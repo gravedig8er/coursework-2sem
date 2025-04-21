@@ -14,6 +14,6 @@ public:
   int GetLength();
   void SetLength(int length);
   void operator = (const String& other);
-  void reset(); 
+   
   char* GetLine() { return line; }
 }; 

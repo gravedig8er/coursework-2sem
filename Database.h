@@ -8,5 +8,5 @@ private:
 
 public: 
   Person* GetHead();
-  void push_back(Person*);
+  void push_back( Person& temp);
 };
