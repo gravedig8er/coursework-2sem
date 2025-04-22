@@ -11,9 +11,13 @@ private:
   int YEAR; // год поступления
   Direction* DIRECT; // направление
   Discipline* DISCPLINE; // дисциплины
-  
+  int GroupNumber;
 public: 
   Person* GetHead(); // получаем начало на список студентов
+  void SetYEAR();
+  void SetDIRECT();
+  void SetDISCPLINE();
+  void SetGroupNumber();
   void push_back(Person& temp);
 
 };

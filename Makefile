@@ -24,7 +24,7 @@ Grade.o: Grade.cpp
 	g++ -c Grade.cpp
 Database.o: Database.cpp Group.h
 	g++ -c Database.cpp
-MyFunctions.o: MyFunctions.cpp 
+MyFunctions.o: MyFunctions.cpp Database.h Direction.h
 	g++ -c MyFunctions.cpp
 Group.o: Group.cpp Group.h Person.h Direction.h Discipline.h
 	g++ -c Group.cpp

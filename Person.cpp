@@ -4,6 +4,13 @@ Person::Person() {
 
 }
 
+Person::~Person() {
+  if (FIO) delete FIO;
+  if (DIRECT) delete DIRECT;
+  if (DISCIPLINE) delete DISCIPLINE;
+}
+
+
 Person::Person(const Person& temp) {
   this->ID = temp.ID;
   this->GROUP = temp.GROUP;
@@ -38,17 +45,20 @@ void Person::SetID(int ID) {
   this->ID = ID;
 }
 
-void Person::SetFIO(FullName* temp) {
-  this->FIO = temp;
+void Person::SetFIO(const FullName& temp) {
+  if (this->FIO) delete this->FIO;
+  this->FIO = new FullName(temp); // ← копия
+}
+
+void Person::SetDIRECT(const Direction& temp) {
+  if (this->DIRECT) delete this->DIRECT;
+  this->DIRECT = new Direction(temp); // ← копия
 }
 
 void Person::SetDATE(int DATE) {
   this->DATE = DATE;
 }
 
-void Person::SetDIRECT(Direction* temp) {
-  this->DIRECT = temp;
-}
 
 void Person::SetGROUP(int GROUP) {
   this->GROUP = GROUP;

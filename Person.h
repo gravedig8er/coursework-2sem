@@ -28,9 +28,9 @@ public:
   Person(const Person& temp);
   ~Person();
   void SetID(int ID);
-  void SetFIO(FullName* temp);
+  void SetFIO(const FullName& temp);
   void SetDATE(int DATE);
-  void SetDIRECT(Direction* temp);
+  void SetDIRECT(const Direction& temp);
   void SetGROUP(int GROUP);
   void SetNext(Person*);
   Person* GetNext();
