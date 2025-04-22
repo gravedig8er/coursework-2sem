@@ -14,7 +14,15 @@ private:
   Discipline* DISCIPLINE; // дисциплины 
 
   Person* pNext; // указатель на следующего человека 
-
+  //==========Оценки=========
+  int** FirstSem;
+  int** SecondSem; 
+  
+  int** ExamsRetakeF; 
+  int** TestsRetakeF;
+  int** ExamsRetakeS; 
+  int** TestsRetakeS; 
+  
 public: 
   Person();
   Person(const Person& temp);
@@ -24,6 +32,6 @@ public:
   void SetDATE(int DATE);
   void SetDIRECT(Direction* temp);
   void SetGROUP(int GROUP);
-  void SetNext( Person*);
+  void SetNext(Person*);
   Person* GetNext();
 };

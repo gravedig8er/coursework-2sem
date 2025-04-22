@@ -22,9 +22,9 @@ Semestr.o: Semestr.cpp Grade.h
 	g++ -c Semestr.cpp
 Grade.o: Grade.cpp 
 	g++ -c Grade.cpp
-Database.o: Database.cpp Person.h
+Database.o: Database.cpp Group.h
 	g++ -c Database.cpp
 MyFunctions.o: MyFunctions.cpp 
 	g++ -c MyFunctions.cpp
-Group.o: Group.cpp Group.h
+Group.o: Group.cpp Group.h Person.h Direction.h Discipline.h
 	g++ -c Group.cpp

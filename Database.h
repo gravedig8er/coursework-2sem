@@ -1,12 +1,12 @@
 #pragma once 
-#include "Person.h"
+#include "Group.h"
 
 class Database {
 private: 
-  Person* head; 
-  Person* tail;
+  Group* head; 
+  Group* tail;
 
 public: 
-  Person* GetHead();
-  void push_back( Person& temp);
+  Group* GetHead(); 
+  void push_back(Group& temp);
 };
