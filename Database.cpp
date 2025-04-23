@@ -1,11 +1,11 @@
 #include "Database.h"
 
-Person* Database::GetHead() {
+Group* Database::GetHead() {
   return head; 
 }
 
-void Database::push_back( Person& temp) {
-  Person* newNode = new Person(temp); 
+void Database::push_back(Group& temp) {
+  Group* newNode = new Group(temp); 
 
   if (head == nullptr) {
     head = newNode;

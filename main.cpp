@@ -23,7 +23,7 @@ int main() {
     temp.SetID(ID); 
     students.get(ch);
   //==================Считывание фамилии==============
-    while (ch == ' ' || ch = '\t') students.get(ch);
+    while (ch == ' ' || ch == '\t') students.get(ch);
     FullName name;
     while (ch != '\t') { // пока находимся в фамилии
       buffer[counter++] = ch; 
@@ -52,7 +52,7 @@ int main() {
 
   //==================Считывание направления==============  
     Direction direct; 
-    while (ch == ' ' || ch = '\t') students.get(ch); 
+    while (ch == ' ' || ch == '\t') students.get(ch); 
 
     while (ch != '\t') { // пока мы внутри направления
       buffer[counter++] = ch;

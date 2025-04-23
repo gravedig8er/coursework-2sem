@@ -19,7 +19,7 @@ Group* FindGroup(Database& base, int number, int year, Direction* direct) {
   newGroup->SetYEAR(year);
   newGroup->SetDIRECT(direct);
   newGroup->SetGroupNumber(number); // нужно реализовать
-  base.push_back(newGroup);
+  base.push_back(*newGroup); // сразу добавляем в список общих групп 
 
   return newGroup;
 }

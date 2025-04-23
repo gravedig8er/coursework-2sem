@@ -12,12 +12,18 @@ private:
   Direction* DIRECT; // направление
   Discipline* DISCPLINE; // дисциплины
   int GroupNumber;
-public: 
-  Person* GetHead(); // получаем начало на список студентов
-  void SetYEAR();
-  void SetDIRECT();
-  void SetDISCPLINE();
-  void SetGroupNumber();
-  void push_back(Person& temp);
 
+  Group* pNext; 
+public: 
+  Group();
+  Group(Group& other);
+  Person* GetHead(); // получаем начало на список студентов
+  void SetYEAR(int year);
+  void SetDIRECT(Direction* direct);
+  void SetGroupNumber(int number);
+  //void SetDISCPLINE();
+  void push_back(Person& temp);
+  void SetNext(Group* temp);
+  Group* GetNext();
+  int GetNumber();
 };

@@ -8,5 +8,5 @@ private:
 
 public: 
   Group* GetHead(); 
-  void push_back(Group* temp);
+  void push_back(Group& temp);
 };
