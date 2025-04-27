@@ -1,73 +1,66 @@
 #include "Person.h"
 
 Person::Person() {
+  this->id = 0;
+  this->group_number = 0;
+  this->year = 0;
 
+  this->fio = nullptr;
+  this->direct = nullptr;
+
+  
+  this->pNext = nullptr;
+}
+
+Person::Person(const Person& other) {
+  this->id = other.id;
+  this->group_number = other.group_number;
+  this->year = other.year;
+
+  if (other.fio != nullptr) {
+    this->fio = new FullName(*(other.fio));
+  } else {
+    this->fio = nullptr;
+  }
+
+  if (other.direct != nullptr) {
+    this->direct = new Direction(*(other.direct));
+  } else {
+    this->direct = nullptr;
+  }
+
+  this->pNext = nullptr;
 }
 
 Person::~Person() {
-  if (FIO) delete FIO;
-  if (DIRECT) delete DIRECT;
-  if (DISCIPLINE) delete DISCIPLINE;
-}
-
-
-Person::Person(const Person& temp) {
-  this->ID = temp.ID;
-  this->GROUP = temp.GROUP;
-  this->DATE = temp.DATE;
-
-  if (temp.FIO) {
-    this->FIO = new FullName(*temp.FIO); 
-  } 
-  else {
-    this->FIO = nullptr;
+  if (fio != nullptr) {
+    delete fio;
+    fio = nullptr;
   }
-
-  if (temp.DIRECT) {
-    this->DIRECT = new Direction(*temp.DIRECT);  
-  } 
-  else {
-    this->DIRECT = nullptr;
+  if (direct != nullptr) {
+    delete direct;
+    direct = nullptr;
   }
-
-  if (temp.DISCIPLINE) {
-    this->DISCIPLINE = new Discipline(*temp.DISCIPLINE);  
-  } 
-  else {
-    this->DISCIPLINE = nullptr;
-  }
-
-  this->pNext = nullptr;  
 }
 
-
-void Person::SetID(int ID) {
-  this->ID = ID;
+void Person::SetId(int id) {
+  this->id = id;
 }
 
-void Person::SetFIO(const FullName& temp) {
-  if (this->FIO) delete this->FIO;
-  this->FIO = new FullName(temp); // ← копия
+void Person::SetYear(int year) {
+  this->year = year;
 }
 
-void Person::SetDIRECT(const Direction& temp) {
-  if (this->DIRECT) delete this->DIRECT;
-  this->DIRECT = new Direction(temp); // ← копия
+void Person::SetFio(FullName* fio) {
+  if (this->fio != nullptr) delete this->fio;
+  this->fio = new FullName(*fio); 
 }
 
-void Person::SetDATE(int DATE) {
-  this->DATE = DATE;
+void Person::SetDirect(Direction* dir) {
+  if (this->direct != nullptr) delete this->direct;
+  this->direct = new Direction(*dir); 
 }
 
-
-void Person::SetGROUP(int GROUP) {
-  this->GROUP = GROUP;
-}
-
-Person* Person::GetNext() {
-  return pNext;
-}
-
-void Person::SetNext(Person* temp) {
-  this->pNext = temp;
+void Person::SetGroup(int group) {
+  this->group_number = group;
 }

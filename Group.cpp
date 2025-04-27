@@ -1,83 +1,64 @@
 #include "Group.h"
 
 Group::Group() {
-    head = nullptr;
-    tail = nullptr;
-    YEAR = 0;
-    DIRECT = nullptr;
-    DISCPLINE = nullptr;
-    GroupNumber = 0;
-    pNext = nullptr;
+  this->head = nullptr; 
+  this->tail = nullptr; 
+  this->number = 0;
+  this->year = 0;
+
+  this->pNext = nullptr;
 }
 
-Group::Group(Group& other) {
-    this->YEAR = other.YEAR;
-    this->GroupNumber = other.GroupNumber;
+Group::Group(const Group& other) {
+  this->head = nullptr; 
+  this->tail = nullptr; 
+  this->number = other.number;
+  this->year = other.year;
 
-    if (other.DIRECT) {
-        this->DIRECT = new Direction(*other.DIRECT);
-    } else {
-        this->DIRECT = nullptr;
-    }
+  this->pNext = nullptr;
 
-    // Глубокое копирование Discipline, если оно существует
-    if (other.DISCPLINE) {
-        this->DISCPLINE = new Discipline(*other.DISCPLINE);
-    } else {
-        this->DISCPLINE = nullptr;
-    }
-
-    this->head = nullptr;
-    this->tail = nullptr;
-    this->pNext = nullptr;
-
-    // Глубокое копирование студентов
-    Person* current = other.head;
-    while (current) {
-        this->push_back(*current);  // Добавляем копию студента
-        current = current->GetNext();
-    }
-}
-
-Person* Group::GetHead() {
-    return head;
-}
-
-void Group::SetYEAR(int year) {
-    this->YEAR = year;
-}
-
-void Group::SetDIRECT(Direction* direct) {
-    if (this->DIRECT) {
-        delete this->DIRECT;
-    }
-    this->DIRECT = new Direction(*direct); // Глубокое копирование Direction
-}
-
-void Group::SetGroupNumber(int number) {
-    this->GroupNumber = number;
-}
-
-void Group::push_back(Person& temp) {
-    Person* newPerson = new Person(temp);  // Глубокое копирование студента
-
+  Person* current = other.head;
+  while (current != nullptr) {
+    Person* newPerson = new Person(*current);
     if (head == nullptr) {
-        head = newPerson;
-        tail = head;
-    } else {
-        tail->SetNext(newPerson);
-        tail = newPerson;
+      head = newPerson;
+      tail = newPerson;
+    } 
+    else {
+      tail->SetNext(newPerson);
+      tail = newPerson;
     }
+    tail->SetNext(nullptr);
+    current = current->GetNext();
+  }
+  if (tail != nullptr) {
+    tail->SetNext(nullptr);  
+  }
 }
 
-void Group::SetNext(Group* temp) {
-    this->pNext = temp;
+Group::~Group() {
+  Person* current = head;
+  while (current != nullptr) {
+    Person* nextPerson = current->GetNext();  
+    delete current;
+    current = nextPerson;
+  }
 }
 
-Group* Group::GetNext() {
-    return pNext;
+void Group::AddStudent(Person temp) {
+  Person* newObj = new Person(temp); //! 
+  if (head == nullptr) {
+    head = newObj;
+    tail = newObj;
+  } 
+  else {
+    tail->SetNext(newObj);
+    tail = newObj;
+  }
+  tail->SetNext(nullptr); 
 }
 
-int Group::GetNumber() {
-    return GroupNumber;
+void Group::SetDirect(Direction* dir) {
+  if (this->direct != nullptr) delete this->direct;
+  this->direct = new Direction(*dir); 
 }

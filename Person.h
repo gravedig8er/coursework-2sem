@@ -1,37 +1,31 @@
 #pragma once 
 #include "FullName.h"
 #include "Direction.h"
-#include "Discipline.h"
 
 class Person {
-private: 
-  int ID; // личное дело 
-  int GROUP; // группа 
-  int DATE; // дата зачисления
+private:
+  int id;  // личное дело 
+  int group_number; // группа
+  int year; // год приема 
+  // направление подготовки 
+  FullName* fio;
+  Direction* direct; // направление
 
-  FullName* FIO; // ФИО
-  Direction* DIRECT; // направление обучения 
-  Discipline* DISCIPLINE; // дисциплины 
-
-  Person* pNext; // указатель на следующего человека 
-  //==========Оценки=========
-  int** FirstSem;
-  int** SecondSem; 
-  
-  int** ExamsRetakeF; 
-  int** TestsRetakeF;
-  int** ExamsRetakeS; 
-  int** TestsRetakeS; 
-  
+  Person* pNext; 
 public: 
   Person();
-  Person(const Person& temp);
+  Person(const Person& other);
   ~Person();
-  void SetID(int ID);
-  void SetFIO(const FullName& temp);
-  void SetDATE(int DATE);
-  void SetDIRECT(const Direction& temp);
-  void SetGROUP(int GROUP);
-  void SetNext(Person*);
-  Person* GetNext();
+  void SetId(int id);
+  void SetYear(int year);
+  void SetFio(FullName* fio);
+  void SetDirect(Direction* direct);
+  void SetGroup(int group);
+  void SetNext(Person* next) { this->pNext = next; }
+  Person* GetNext() const { return pNext; }
+  int GetId() const { return id; }
+  FullName* GetFio() const { return fio; }
+  Direction* GetDirect() const { return direct; }
+  int GetGroup() const { return group_number; }
+  int GetYear() const { return year; }
 };

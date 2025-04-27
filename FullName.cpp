@@ -1,40 +1,35 @@
 #include "FullName.h"
 
 FullName::FullName() {
+  this->str = String();
+  this->pNext = nullptr;
+}
 
+FullName::FullName(String temp) {
+  this->str = temp; 
+  this->pNext = nullptr;
 }
 
 FullName::FullName(const FullName& other) {
   this->str = other.str;
-  this->pNext = nullptr;
 
-  FullName* currentOther = other.pNext;
-  FullName* currentThis = this;
-
-  while (currentOther != nullptr) {
-    currentThis->pNext = new FullName();             
-    currentThis = currentThis->pNext;                
-    currentThis->str = currentOther->str;            
-    currentThis->pNext = nullptr;                    
-    currentOther = currentOther->pNext;              
-  }
+  if (other.pNext) this->pNext = new FullName(*(other.pNext));
+  else this->pNext = nullptr;
 }
 
-
 FullName::~FullName() {
-
+  if (pNext != nullptr) {
+    delete pNext;
+    pNext = nullptr;
+  }
 }
 
 void FullName::push_back(String temp) {
-  FullName* current = this;
+  FullName* current = this; 
   while (current->pNext) {
-      current = current->pNext;
+    current = current->pNext;
   }
 
-  FullName* newNode = new FullName;
-  newNode->str = temp;
-  newNode->pNext = nullptr;
-
-  current->pNext = newNode;
+  current->pNext = new FullName(temp);
 }
 

@@ -2,11 +2,13 @@
 #include "Group.h"
 
 class Database {
-private: 
+private:
   Group* head; 
   Group* tail;
-
 public: 
-  Group* GetHead(); 
-  void push_back(Group& temp);
+  Database();
+  ~Database();
+  void AddGroup(Group* group);
+  Group* FindGroup(int number); 
+  Group* GetHead() const { return head; }
 };

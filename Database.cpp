@@ -1,18 +1,39 @@
 #include "Database.h"
 
-Group* Database::GetHead() {
-  return head; 
+Database::Database() {
+  this->head = nullptr; 
+  this->tail = nullptr; 
 }
 
-void Database::push_back(Group& temp) {
-  Group* newNode = new Group(temp); 
+Database::~Database() {
+  Group* current = head;
 
+  while (current != nullptr) {
+    Group* nextGroup = current->GetNext(); 
+    delete current;
+    current = nextGroup;
+  }
+}
+
+void Database::AddGroup(Group* group) {
+  Group* newObj = new Group(*group); //! 
   if (head == nullptr) {
-    head = newNode;
-    tail = head;
+    head = newObj;
+    tail = newObj;
   } 
   else {
-    tail->SetNext(newNode);
-    tail = newNode;
+    tail->SetNext(newObj);
+    tail = newObj;
   }
+  tail->SetNext(nullptr);
+}
+
+Group* Database::FindGroup(int number) {
+  Group* current = head; 
+  while (current) {
+    if (current->GetNumber() == number) 
+      return current;
+    current = current->GetNext();
+  }
+  return nullptr;
 }
