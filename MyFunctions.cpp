@@ -5,3 +5,7 @@ void reset(char* str, int size) {
     str[i] = '\0';
   }
 }
+
+bool is_digit(char ch) {
+  return ch >= '0' && ch <= '9';
+}

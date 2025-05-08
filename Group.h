@@ -1,6 +1,8 @@
 #pragma once
 #include "Person.h"
 #include "Direction.h"
+#include "DisciplineNode.h"
+#include "Discipline.h"
 
 class Group {
 private:
@@ -11,7 +13,7 @@ private:
 
   // Direction направление
   Direction* direct;
-
+  Discipline* discip;
 
   Group* pNext; 
 public: 
@@ -24,5 +26,6 @@ public:
   void SetGroup(int number) { this->number = number; }
   void AddStudent(Person temp);
   void SetDirect(Direction* dir);
+  void AddDiscipl(DisciplineNode* temp);
   Person* GetHead() const { return head; }
 };

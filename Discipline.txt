@@ -1,5 +1,6 @@
 4352
-Математический анализ
-Линейная алгебра
-
-4382
+mathematical analysis
+linear algebra
+4362
+programming
+asdasdad

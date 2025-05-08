@@ -1,2 +1,8 @@
 121 Krugluakov Vlad->islav Dmitrievi->ch 2024 Computer Scienc->e and Engineeri->ng 4352
-122 Imangulov Damir-> Marsovich 2024 Computer Scienc->e and Engineeri->ng 4352
+122 Imangulov Damir-> Marsovich 2024 Computer Scienc->e and Engineeri->ng 4362
+
+
+"mathematical an"->"alysis": 4352
+"linear algebra": 4352
+"programming": 4362
+"asdasdad": 4362

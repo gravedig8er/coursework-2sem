@@ -14,4 +14,6 @@ public:
   void push_back(String temp);
   String GetStr() const { return str; }
   Direction* GetNext() const { return pNext; }
+  bool operator==(const Direction& other) const;
+  void SetNext(Direction* temp);
 };
