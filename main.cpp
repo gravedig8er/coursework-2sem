@@ -113,56 +113,59 @@ int main() {
   /*нужно проверять символ на цифру, если она, то запускаемся в цикле. иначе не получается 
   идти по файлу, записывая номер группы*/
   DisciplineBase DB;
-  int group; 
+  int currentGroup = 0; // Текущая группа (0 = не задана)
 
   while (discipline.get(ch)) {
-    if (is_digit(ch)) { // находимся внутри дисциплин
+    // Если символ — цифра, начинаем читать номер группы
+    if (isdigit(ch)) {
       discipline.unget();
-      discipline >> group; // считали номер группы 
-      discipline.get(ch); 
-      while (ch != '\n') discipline.get(ch); // теперь ch хранит \n
-      discipline.get(ch); // указываем на символ. считываем его
-    }
+      discipline >> currentGroup; // Читаем номер группы
 
-    DisciplineNode temp; // здесь хранится вся строка-дисциплина
-    char buffer[N+1] = {};
-    buffer[0] = ch;
-    int counter = 1; 
+      // Пропускаем все символы до конца строки
+      while (discipline.get(ch) && (ch != '\n' && ch != '\r')) {}
+    } 
+    // Если текущая группа задана и символ не цифра — читаем дисциплину
+    else if (currentGroup != 0) {
+      DisciplineNode temp;
+      char buffer[N+1] = {};
+      int counter = 0;
 
-    discipline.get(ch);
-    while (ch != '\n' && !discipline.eof()) { // Изменено условие: проверяем \n и конец файла
-      buffer[counter++] = ch; 
-      if (counter == N) {
+      // Пропускаем пробелы и табы в начале строки
+      while (ch == ' ' || ch == '\t') {
+        if (!discipline.get(ch)) break;
+      }
+
+      // Читаем название дисциплины до конца строки
+      while (ch != '\n' && ch != '\r' && !discipline.eof()) {
+        buffer[counter++] = ch;
+        if (counter == N) {
+          buffer[N] = '\0';
+          temp.push_back(String(buffer));
+          counter = 0;
+        }
+        if (!discipline.get(ch)) break;
+      }
+
+      // Добавляем оставшиеся символы
+      if (counter > 0) {
         buffer[counter] = '\0';
         temp.push_back(String(buffer));
-        reset(buffer, N+1);
-        counter = 0;
       }
-      discipline.get(ch);
-    }
 
-    if (counter > 0) {
-      buffer[counter] = '\0';
-      temp.push_back(String(buffer));
-      reset(buffer, N+1);
-      counter = 0;
+      // Добавляем дисциплину, если она не пустая
+      if (temp.GetDir() != nullptr) {
+        DisciplineNode* add = DB.find(temp);
+        if (!add) {
+            DB.push_back(temp);
+            add = DB.find(temp);
+        }
+        Group* findGroup = base.FindGroup(currentGroup);
+        if (findGroup) {
+            findGroup->AddDiscipl(add);
+            add->push_back(currentGroup);
+        }
+      }
     }
-    
-    // !!!Сейчас temp хранит целиком дисциплину как положено в памяти
-    /*Здесь нужно пройти по всей базе дисцилпин и понять, есть такая или нет
-      потом добавить ее в базу в случае чего и пройти по Group-Discip до конца,
-      сделать указатель на эту область из базы.
-    
-    */
-    DisciplineNode* add = DB.find(temp); // ищем дисцплину в базе
-    if (!add) { // если ничего не нашли, то создаем
-      DB.push_back(temp); // записали в базу дисциплину
-      add = DB.find(temp); // нашли только что добавленную дисциплину и взяли ее указатель (здесь происходит глубокое копирование)
-    }
-    Group* find = base.FindGroup(group); // нашли группу по номеру
-    find->AddDiscipl(add); // подвязали к списку дисциплин внутри группы
-    // каждая дисциплина знает у каких групп она идет
-    add->push_back(group); // заносим в список номер группы 
   }
   //=======================================================
 
@@ -214,7 +217,7 @@ int main() {
     while (temp != nullptr) {
       if (!firstWord)
         output << "->";
-      output << "\"" << temp->GetStr().GetLine() << "\"";
+      output << temp->GetStr().GetLine();
       firstWord = false;
       temp = temp->GetNext();
     }
