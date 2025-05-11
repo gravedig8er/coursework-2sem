@@ -13,7 +13,7 @@
 #include "DisciplineBase.h"
 
 int main() {
-  std::fstream students, discipline, output, protocol; 
+  std::fstream students, discipline, output, grades1, grades2, protocol; 
   output.open("output.txt", std::ios::out);
   if (!output.is_open()) {std::cout  << "Check file1\n"; return 0;}
   Database base; // вся база студентов
@@ -24,8 +24,13 @@ int main() {
   discipline.open("Discipline.txt", std::ios::in);
   if (!discipline.is_open()) {std::cout << "Check file3\n"; return 0;}
 
+  grades1.open("grades1.txt", std::ios::in);
+  if (!grades1.is_open()) {std::cout << "Check file4\n"; return 0;}
 
-  int id; 
+  grades2.open("grades2.txt", std::ios::in);
+  if (!grades2.is_open()) {std::cout << "Check file5\n"; return 0;}
+
+  int id = 0; 
   char ch; 
 
   // заполнение
@@ -112,6 +117,7 @@ int main() {
   //================Считывание дисциплин===================
   /*нужно проверять символ на цифру, если она, то запускаемся в цикле. иначе не получается 
   идти по файлу, записывая номер группы*/
+  
   DisciplineBase DB;
   int currentGroup = 0; // Текущая группа (0 = не задана)
 
@@ -162,12 +168,181 @@ int main() {
         Group* findGroup = base.FindGroup(currentGroup);
         if (findGroup) {
             findGroup->AddDiscipl(add);
+            // когда добавил дисциплину нужно увеличить счетчик
+            findGroup->IncCountDiscip();
             add->push_back(currentGroup);
         }
       }
     }
   }
   //=======================================================
+
+  //=================Считывание оценок=====================
+  // нужно брать количество дисцупилин в группе, по которой смотрим студента. 
+  // т.к это один из индексов массива. добавил в группы count_discip
+  // Считывание оценок за первый семестр
+{
+    int id = 0;
+    int count_discip = 0;
+    int number = -1; // номер дисциплины для текущего студента
+    bool done = false; 
+    Person* student = nullptr;
+    int marks_counter = 0;
+    char ch;
+    
+    // Предполагается, что std::fstream grades1 открыт и готов к чтению
+    while (grades1.get(ch)) {
+        while (ch == '\n' || ch == '\r' || ch == ' ') {
+            if (!grades1.get(ch)) {
+                done = true;
+                break;
+            }
+        }
+        if (done) break;
+        
+        char next;
+        if (!grades1.get(next)) { done = true; break; }
+        
+        // Если обнаружен новый студент (строка с двумя цифрами)
+        if (is_digit(ch) && is_digit(next)) {
+            grades1.unget();
+            grades1.unget();
+            grades1 >> id;  // получили id студента
+            std::cout << "Semester 1: Student id: " << id << "\n";
+            count_discip = base.GetCountDiscip(id); // получили количество дисциплин для студента
+            std::cout << "Semester 1: Count disciplines: " << count_discip << "\n";
+            student = base.FindStudent(id); // нашли студента в базе
+            student->ReserveDiscip(count_discip); 
+            if (!grades1.get(ch)) { done = true; break; }
+            if (ch == '\n' || ch == '\r') {
+                if (!grades1.get(ch)) { done = true; break; }
+            }
+            number = 0; // сброс номера дисциплины для нового студента
+        } else {
+            grades1.unget();  // возвращаем второй символ обратно
+            number++;        // увеличиваем номер дисциплины для текущего студента
+        }
+        
+        // Запоминаем позицию начала блока с оценками
+        int start = (int)(grades1.tellg()) - 1;
+        // Подсчёт количества оценок (marks_counter) до табуляции
+        while (ch != '\t') {
+            if (ch != ' ' && ch != '\n')
+                marks_counter++; // увеличиваем счетчик оценок для дисциплины
+            if (!grades1.get(ch)) { done = true; break; }
+            if (grades1.eof()) { done = true; break; }
+        }
+        if (done) break;
+        
+        // Резервируем память под оценки для текущей дисциплины в первом семестре
+        student->ReserveMarksSem1(number, marks_counter);
+        
+        char type = -1;
+        if (!grades1.get(type)) { done = true; break; }
+        
+        // Возвращаемся к началу блока оценок для повторного чтения
+        grades1.seekg(start);
+        if (!grades1.get(ch)) { done = true; break; }
+        
+        std::cout << "Semester 1, Discipline " << number << ": ";
+        while (ch != '\t') {
+            if (ch != ' ' && ch != '\n' && ch != '\r') {
+                std::cout << ch << " ";
+                student->AddGradeSem1(number, ch, type);
+            }
+            if (!grades1.get(ch)) { done = true; break; }
+        }
+        std::cout << "| Type: " << type;
+        std::cout << " | Marks counter: " << marks_counter << "\n";
+        marks_counter = 0; // сброс счетчика оценок
+        
+        if (done) break;
+        // Пропускаем оставшиеся символы (обычно разделитель и перевод строки)
+        if (!grades1.get(ch)) { done = true; break; }
+        if (!grades1.get(ch)) { done = true; break; }
+    }
+} // конец блока первого семестра
+
+// Считывание оценок за второй семестр
+{
+    int id = 0;
+    int count_discip = 0;
+    int number = -1; // номер дисциплины для текущего студента
+    bool done = false; 
+    Person* student = nullptr;
+    int marks_counter = 0;
+    char ch;
+    
+    // Предполагается, что std::fstream grades2 открыт и готов к чтению
+    while (grades2.get(ch)) {
+        while (ch == '\n' || ch == '\r' || ch == ' ') {
+            if (!grades2.get(ch)) {
+                done = true;
+                break;
+            }
+        }
+        if (done) break;
+        
+        char next;
+        if (!grades2.get(next)) { done = true; break; }
+        
+        if (is_digit(ch) && is_digit(next)) {
+            grades2.unget();
+            grades2.unget();
+            grades2 >> id;  // получили id студента
+            std::cout << "Semester 2: Student id: " << id << "\n";
+            count_discip = base.GetCountDiscip(id); // получили количество дисциплин
+            std::cout << "Semester 2: Count disciplines: " << count_discip << "\n";
+            student = base.FindStudent(id); // нашли студента в базе
+            student->ReserveDiscip(count_discip); 
+            if (!grades2.get(ch)) { done = true; break; }
+            if (ch == '\n' || ch == '\r') {
+                if (!grades2.get(ch)) { done = true; break; }
+            }
+            number = 0; // сброс номера дисциплины для нового студента
+        } else {
+            grades2.unget();
+            number++;
+        }
+        
+        int start = (int)(grades2.tellg()) - 1;
+        while (ch != '\t') {
+            if (ch != ' ' && ch != '\n')
+                marks_counter++;
+            if (!grades2.get(ch)) { done = true; break; }
+            if (grades2.eof()) { done = true; break; }
+        }
+        if (done) break;
+        
+        // Резервируем память под оценки для данного студента по дисциплине во втором семестре
+        student->ReserveMarksSem2(number, marks_counter);
+        
+        char type = -1;
+        if (!grades2.get(type)) { done = true; break; }
+        
+        grades2.seekg(start);
+        if (!grades2.get(ch)) { done = true; break; }
+        
+        std::cout << "Semester 2, Discipline " << number << ": ";
+        while (ch != '\t') {
+            if (ch != ' ' && ch != '\n' && ch != '\r') {
+                std::cout << ch << " ";
+                student->AddGradeSem2(number, ch, type);
+            }
+            if (!grades2.get(ch)) { done = true; break; }
+        }
+        std::cout << "| Type: " << type;
+        std::cout << " | Marks counter: " << marks_counter << "\n";
+        marks_counter = 0;
+        
+        if (done) break;
+        if (!grades2.get(ch)) { done = true; break; }
+        if (!grades2.get(ch)) { done = true; break; }
+    }
+}
+  //=======================================================
+
+
 
   //===========================Вывод=============================
   // нужно перебрать все группы и каждого студента
@@ -176,7 +351,7 @@ int main() {
   while (current != nullptr) {
     Person* currentPerson = current->GetHead(); // получаем голову группы
     while (currentPerson != nullptr) {
-      output << currentPerson->GetId() << " ";
+      output << currentPerson->GetId() << "\t";
       FullName* fio = currentPerson->GetFio();
       Direction* dir = currentPerson->GetDirect();
 
@@ -189,8 +364,8 @@ int main() {
         }
         fio = fio->GetNext();
       }
-
-      output << currentPerson->GetYear() << " ";
+      output << "\t";
+      output << currentPerson->GetYear() << "\t";
 
       while (dir != nullptr) {
         String str = dir->GetStr();
@@ -201,6 +376,7 @@ int main() {
         }
         dir = dir->GetNext();
       }
+      output << "\t";
       output << currentPerson->GetGroup() << "\n";
 
       currentPerson = currentPerson->GetNext();
@@ -237,8 +413,15 @@ int main() {
     currentDiscipl = currentDiscipl->GetNext();
   }
 
+  //вывод оценок каждого студента
+  
+
+
   //========================================================
   students.close();
   output.close();
+  grades1.close();
+  grades2.close();
+  discipline.close();
   protocol.close();
 }

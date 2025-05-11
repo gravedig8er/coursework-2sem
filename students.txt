@@ -1,2 +1,3 @@
 121	Krugluakov Vladislav Dmitrievich	2024	Computer Science and Engineering	4352
 122	Imangulov Damir Marsovich		2024	Computer Science and Engineering	4362
+131	Stukalkin Michail Michailovich		2024	Applied mathematics			4382

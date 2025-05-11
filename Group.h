@@ -14,6 +14,8 @@ private:
   // Direction направление
   Direction* direct;
   Discipline* discip;
+  int count_discip;
+
 
   Group* pNext; 
 public: 
@@ -28,4 +30,6 @@ public:
   void SetDirect(Direction* dir);
   void AddDiscipl(DisciplineNode* temp);
   Person* GetHead() const { return head; }
+  int GetCountDiscip() const { return count_discip; }
+  void IncCountDiscip() { count_discip++; }
 };

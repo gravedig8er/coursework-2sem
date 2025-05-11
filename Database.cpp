@@ -37,3 +37,31 @@ Group* Database::FindGroup(int number) {
   }
   return nullptr;
 }
+
+Person* Database::FindStudent(int id) {
+  Group* currentGroup = head; 
+  while (currentGroup) {
+    Person* currentStudent = currentGroup->GetHead(); 
+    while (currentStudent) {
+      if (currentStudent->GetId() == id) 
+        return currentStudent;
+      currentStudent = currentStudent->GetNext();
+    }
+    currentGroup = currentGroup->GetNext();
+  }
+  return nullptr;
+}
+
+int Database::GetCountDiscip(int id) {
+  Group* currentGroup = head; 
+  while (currentGroup) {
+    Person* currentStudent = currentGroup->GetHead(); 
+    while (currentStudent) {
+      if (currentStudent->GetId() == id) 
+        return currentGroup->GetCountDiscip();
+      currentStudent = currentStudent->GetNext();
+    }
+    currentGroup = currentGroup->GetNext();
+  }
+  return -1; 
+}

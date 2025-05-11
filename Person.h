@@ -11,6 +11,18 @@ private:
   FullName* fio;
   Direction* direct; // направление
 
+  int*** grades1; //оценки в первом семестре
+  int*** grades2; //оценки во втором семестре
+  int count_discip;
+  int*** retake_grades1; // пересдачи в первом семестре
+  int*** retake_grades2; // пересдачи во втором семестре
+
+  int** examMarksCount1; // количество оценок по дисциплине
+  int** retakeMarksCount1; // количество оценок по пересдачам
+
+  int** examMarksCount2; // количество оценок по дисциплине
+  int** retakeMarksCount2; // количество оценок по пересдачам
+
   Person* pNext; 
 public: 
   Person();
@@ -28,4 +40,9 @@ public:
   Direction* GetDirect() const { return direct; }
   int GetGroup() const { return group_number; }
   int GetYear() const { return year; }
+  void ReserveDiscip(int count_discip);
+  void ReserveMarksSem1(int number, int count);
+  void ReserveMarksSem2(int number, int count);
+  void AddGradeSem1(int number, char grade, char type);
+  void AddGradeSem2(int number, char grade, char type);
 };

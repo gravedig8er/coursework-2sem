@@ -4,7 +4,7 @@ file: main.o Database.o Direction.o Discipline.o DisciplineBase.o DisciplineNode
 	g++ main.o Database.o Direction.o Discipline.o DisciplineBase.o DisciplineNode.o FullName.o Group.o MyFunctions.o Person.o String.o -o file
 main.o: main.cpp Database.h Person.h config.h FullName.h String.h MyFunctions.h Direction.h Group.h Discipline.h DisciplineNode.h DisciplineBase.h
 	g++ -c main.cpp
-Database.o: Database.cpp Database.h Group.h config.h
+Database.o: Database.cpp Database.h Group.h config.h Person.h
 	g++ -c Database.cpp
 Direction.o: Direction.cpp Direction.h String.h config.h
 	g++ -c Direction.cpp

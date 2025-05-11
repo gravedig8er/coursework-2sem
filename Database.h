@@ -1,5 +1,6 @@
 #pragma once 
 #include "Group.h"
+#include "Person.h"
 
 class Database {
 private:
@@ -11,4 +12,6 @@ public:
   void AddGroup(Group* group);
   Group* FindGroup(int number); 
   Group* GetHead() const { return head; }
+  Person* FindStudent(int id);
+  int GetCountDiscip(int id);
 };

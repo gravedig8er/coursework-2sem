@@ -5,6 +5,7 @@ Group::Group() {
   this->tail = nullptr; 
   this->number = 0;
   this->year = 0;
+  this->count_discip = 0;
 
   this->pNext = nullptr;
   this->direct = nullptr; 
@@ -16,6 +17,7 @@ Group::Group(const Group& other) {
   this->tail = nullptr;
   this->number = other.number;
   this->year = other.year;
+  this->count_discip = other.count_discip;
   this->pNext = nullptr;
   this->direct = nullptr;
   this->discip = nullptr;

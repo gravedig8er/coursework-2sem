@@ -13,4 +13,5 @@ public:
   DisciplineNode* GetObj() const { return obj; }
 
   void SetNext(Discipline* temp);
+  
 };
