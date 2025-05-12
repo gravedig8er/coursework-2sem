@@ -31,5 +31,6 @@ public:
   void AddDiscipl(DisciplineNode* temp);
   Person* GetHead() const { return head; }
   int GetCountDiscip() const { return count_discip; }
+  Discipline* GetDiscip() const { return discip; }
   void IncCountDiscip() { count_discip++; }
 };

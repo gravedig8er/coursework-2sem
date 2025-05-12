@@ -10,7 +10,8 @@ private:
   // направление подготовки 
   FullName* fio;
   Direction* direct; // направление
-
+  Person* pNext; 
+public:
   int*** grades1; //оценки в первом семестре
   int*** grades2; //оценки во втором семестре
   int count_discip;
@@ -23,7 +24,6 @@ private:
   int** examMarksCount2; // количество оценок по дисциплине
   int** retakeMarksCount2; // количество оценок по пересдачам
 
-  Person* pNext; 
 public: 
   Person();
   Person(const Person& other);
@@ -45,4 +45,8 @@ public:
   void ReserveMarksSem2(int number, int count);
   void AddGradeSem1(int number, char grade, char type);
   void AddGradeSem2(int number, char grade, char type);
+  void AddRetakeSem1(int number, char grade, char type);
+  void AddRetakeSem2(int number, char grade, char type); 
+  int GetCountDiscip() const { return count_discip; } 
+  void ClearDisciplines();
 };

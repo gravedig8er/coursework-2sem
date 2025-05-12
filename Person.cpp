@@ -29,33 +29,32 @@ Person::Person(const Person &other)
       group_number(other.group_number),
       year(other.year),
       count_discip(other.count_discip),
-      pNext(nullptr)  // обычно в копии связи устанавливают в nullptr
+      pNext(nullptr)
 {
-    // Копирование объектов FullName и Direction
-    if(other.fio != nullptr)
+    // Копируем fio и direct
+    if (other.fio != nullptr)
         this->fio = new FullName(*other.fio);
     else
         this->fio = nullptr;
-    
-    if(other.direct != nullptr)
+        
+    if (other.direct != nullptr)
         this->direct = new Direction(*other.direct);
     else
         this->direct = nullptr;
-    
-    // --- Глубокое копирование оценок первого семестра ---
-    if(other.grades1 != nullptr && other.count_discip > 0) {
+        
+    // --- Копирование первого семестра ---
+    if (other.grades1 != nullptr && other.count_discip > 0) {
         grades1 = new int**[other.count_discip];
         examMarksCount1 = new int*[other.count_discip];
-        for (int i = 0; i < other.count_discip; i++) {
-            grades1[i] = new int*[2];  // для двух типов: экзамен и зачет
+        for (int i = 0; i < other.count_discip; ++i) {
+            grades1[i] = new int*[2];
             examMarksCount1[i] = new int[2];
-            for (int j = 0; j < 2; j++) {
-                // Копируем размер массива оценок
+            for (int j = 0; j < 2; ++j) {
                 examMarksCount1[i][j] = other.examMarksCount1[i][j];
                 if (other.grades1[i][j] != nullptr && examMarksCount1[i][j] > 0) {
                     int count = examMarksCount1[i][j];
                     grades1[i][j] = new int[count];
-                    for (int k = 0; k < count; k++) {
+                    for (int k = 0; k < count; ++k) {
                         grades1[i][j][k] = other.grades1[i][j][k];
                     }
                 } else {
@@ -68,18 +67,18 @@ Person::Person(const Person &other)
         examMarksCount1 = nullptr;
     }
     
-    if(other.retake_grades1 != nullptr && other.count_discip > 0) {
+    if (other.retake_grades1 != nullptr && other.count_discip > 0) {
         retake_grades1 = new int**[other.count_discip];
         retakeMarksCount1 = new int*[other.count_discip];
-        for (int i = 0; i < other.count_discip; i++) {
+        for (int i = 0; i < other.count_discip; ++i) {
             retake_grades1[i] = new int*[2];
             retakeMarksCount1[i] = new int[2];
-            for (int j = 0; j < 2; j++) {
+            for (int j = 0; j < 2; ++j) {
                 retakeMarksCount1[i][j] = other.retakeMarksCount1[i][j];
                 if (other.retake_grades1[i][j] != nullptr && retakeMarksCount1[i][j] > 0) {
                     int count = retakeMarksCount1[i][j];
                     retake_grades1[i][j] = new int[count];
-                    for (int k = 0; k < count; k++) {
+                    for (int k = 0; k < count; ++k) {
                         retake_grades1[i][j][k] = other.retake_grades1[i][j][k];
                     }
                 } else {
@@ -92,19 +91,19 @@ Person::Person(const Person &other)
         retakeMarksCount1 = nullptr;
     }
     
-    // --- Глубокое копирование оценок второго семестра ---
-    if(other.grades2 != nullptr && other.count_discip > 0) {
+    // --- Копирование второго семестра ---
+    if (other.grades2 != nullptr && other.count_discip > 0) {
         grades2 = new int**[other.count_discip];
         examMarksCount2 = new int*[other.count_discip];
-        for (int i = 0; i < other.count_discip; i++) {
+        for (int i = 0; i < other.count_discip; ++i) {
             grades2[i] = new int*[2];
             examMarksCount2[i] = new int[2];
-            for (int j = 0; j < 2; j++) {
+            for (int j = 0; j < 2; ++j) {
                 examMarksCount2[i][j] = other.examMarksCount2[i][j];
                 if (other.grades2[i][j] != nullptr && examMarksCount2[i][j] > 0) {
                     int count = examMarksCount2[i][j];
                     grades2[i][j] = new int[count];
-                    for (int k = 0; k < count; k++) {
+                    for (int k = 0; k < count; ++k) {
                         grades2[i][j][k] = other.grades2[i][j][k];
                     }
                 } else {
@@ -117,18 +116,18 @@ Person::Person(const Person &other)
         examMarksCount2 = nullptr;
     }
     
-    if(other.retake_grades2 != nullptr && other.count_discip > 0) {
+    if (other.retake_grades2 != nullptr && other.count_discip > 0) {
         retake_grades2 = new int**[other.count_discip];
         retakeMarksCount2 = new int*[other.count_discip];
-        for (int i = 0; i < other.count_discip; i++) {
+        for (int i = 0; i < other.count_discip; ++i) {
             retake_grades2[i] = new int*[2];
             retakeMarksCount2[i] = new int[2];
-            for (int j = 0; j < 2; j++) {
+            for (int j = 0; j < 2; ++j) {
                 retakeMarksCount2[i][j] = other.retakeMarksCount2[i][j];
                 if (other.retake_grades2[i][j] != nullptr && retakeMarksCount2[i][j] > 0) {
                     int count = retakeMarksCount2[i][j];
                     retake_grades2[i][j] = new int[count];
-                    for (int k = 0; k < count; k++) {
+                    for (int k = 0; k < count; ++k) {
                         retake_grades2[i][j][k] = other.retake_grades2[i][j][k];
                     }
                 } else {
@@ -153,7 +152,7 @@ Person::~Person() {
         direct = nullptr;
     }
     
-    // --- Деструктор для первого семестра ---
+    // --- Освобождение памяти для первого семестра ---
     if (grades1 != nullptr) {
         for (int i = 0; i < count_discip; ++i) {
             if (grades1[i] != nullptr) {
@@ -170,7 +169,6 @@ Person::~Person() {
         delete [] grades1;
         grades1 = nullptr;
     }
-    
     if (examMarksCount1 != nullptr) {
         for (int i = 0; i < count_discip; ++i) {
             delete [] examMarksCount1[i];
@@ -178,7 +176,6 @@ Person::~Person() {
         delete [] examMarksCount1;
         examMarksCount1 = nullptr;
     }
-    
     if (retake_grades1 != nullptr) {
         for (int i = 0; i < count_discip; ++i) {
             if (retake_grades1[i] != nullptr) {
@@ -195,7 +192,6 @@ Person::~Person() {
         delete [] retake_grades1;
         retake_grades1 = nullptr;
     }
-    
     if (retakeMarksCount1 != nullptr) {
         for (int i = 0; i < count_discip; ++i) {
             delete [] retakeMarksCount1[i];
@@ -204,7 +200,7 @@ Person::~Person() {
         retakeMarksCount1 = nullptr;
     }
     
-    // --- Деструктор для второго семестра ---
+    // --- Освобождение памяти для второго семестра ---
     if (grades2 != nullptr) {
         for (int i = 0; i < count_discip; ++i) {
             if (grades2[i] != nullptr) {
@@ -221,7 +217,6 @@ Person::~Person() {
         delete [] grades2;
         grades2 = nullptr;
     }
-    
     if (examMarksCount2 != nullptr) {
         for (int i = 0; i < count_discip; ++i) {
             delete [] examMarksCount2[i];
@@ -229,7 +224,6 @@ Person::~Person() {
         delete [] examMarksCount2;
         examMarksCount2 = nullptr;
     }
-    
     if (retake_grades2 != nullptr) {
         for (int i = 0; i < count_discip; ++i) {
             if (retake_grades2[i] != nullptr) {
@@ -246,7 +240,6 @@ Person::~Person() {
         delete [] retake_grades2;
         retake_grades2 = nullptr;
     }
-    
     if (retakeMarksCount2 != nullptr) {
         for (int i = 0; i < count_discip; ++i) {
             delete [] retakeMarksCount2[i];
@@ -254,7 +247,10 @@ Person::~Person() {
         delete [] retakeMarksCount2;
         retakeMarksCount2 = nullptr;
     }
+    
+    // Освобождаем остальные поля, если они были выделены (например, pNext, если требуется)
 }
+
 
 
 void Person::SetId(int id) {
@@ -418,4 +414,142 @@ void Person::AddGradeSem2(int number, char grade, char type) {
       }
     }
   }
+}
+
+void Person::ClearDisciplines() {
+    // Освобождаем память для первого семестра
+    if (grades1 != nullptr) {
+        for (int i = 0; i < count_discip; ++i) {
+            if (grades1[i] != nullptr) {
+                for (int j = 0; j < 2; ++j) {
+                    if (grades1[i][j] != nullptr) {
+                        delete [] grades1[i][j];
+                        grades1[i][j] = nullptr;
+                    }
+                }
+                delete [] grades1[i];
+                grades1[i] = nullptr;
+            }
+        }
+        delete [] grades1;
+        grades1 = nullptr;
+    }
+    if (examMarksCount1 != nullptr) {
+        for (int i = 0; i < count_discip; ++i) {
+            delete [] examMarksCount1[i];
+        }
+        delete [] examMarksCount1;
+        examMarksCount1 = nullptr;
+    }
+    if (retake_grades1 != nullptr) {
+        for (int i = 0; i < count_discip; ++i) {
+            if (retake_grades1[i] != nullptr) {
+                for (int j = 0; j < 2; ++j) {
+                    if (retake_grades1[i][j] != nullptr) {
+                        delete [] retake_grades1[i][j];
+                        retake_grades1[i][j] = nullptr;
+                    }
+                }
+                delete [] retake_grades1[i];
+                retake_grades1[i] = nullptr;
+            }
+        }
+        delete [] retake_grades1;
+        retake_grades1 = nullptr;
+    }
+    if (retakeMarksCount1 != nullptr) {
+        for (int i = 0; i < count_discip; ++i) {
+            delete [] retakeMarksCount1[i];
+        }
+        delete [] retakeMarksCount1;
+        retakeMarksCount1 = nullptr;
+    }
+
+    // Освобождаем память для второго семестра
+    if (grades2 != nullptr) {
+        for (int i = 0; i < count_discip; ++i) {
+            if (grades2[i] != nullptr) {
+                for (int j = 0; j < 2; ++j) {
+                    if (grades2[i][j] != nullptr) {
+                        delete [] grades2[i][j];
+                        grades2[i][j] = nullptr;
+                    }
+                }
+                delete [] grades2[i];
+                grades2[i] = nullptr;
+            }
+        }
+        delete [] grades2;
+        grades2 = nullptr;
+    }
+    if (examMarksCount2 != nullptr) {
+        for (int i = 0; i < count_discip; ++i) {
+            delete [] examMarksCount2[i];
+        }
+        delete [] examMarksCount2;
+        examMarksCount2 = nullptr;
+    }
+    if (retake_grades2 != nullptr) {
+        for (int i = 0; i < count_discip; ++i) {
+            if (retake_grades2[i] != nullptr) {
+                for (int j = 0; j < 2; ++j) {
+                    if (retake_grades2[i][j] != nullptr) {
+                        delete [] retake_grades2[i][j];
+                        retake_grades2[i][j] = nullptr;
+                    }
+                }
+                delete [] retake_grades2[i];
+                retake_grades2[i] = nullptr;
+            }
+        }
+        delete [] retake_grades2;
+        retake_grades2 = nullptr;
+    }
+    if (retakeMarksCount2 != nullptr) {
+        for (int i = 0; i < count_discip; ++i) {
+            delete [] retakeMarksCount2[i];
+        }
+        delete [] retakeMarksCount2;
+        retakeMarksCount2 = nullptr;
+    }
+}
+
+void Person::AddRetakeSem1(int number, char grade, char type) {
+    int mark = grade - '0';
+    if (type == '1') { // тип '1' означает пересдачу экзамена
+        for (int i = 0; i < retakeMarksCount1[number][0]; i++) {
+            if (retake_grades1[number][0][i] == 0) { // ищем первую свободную ячейку
+                retake_grades1[number][0][i] = mark;
+                break;
+            }
+        }
+    }
+    else if (type == '2') { // тип '2' означает пересдачу зачёта
+        for (int i = 0; i < retakeMarksCount1[number][1]; i++) {
+            if (retake_grades1[number][1][i] == 0) {
+                retake_grades1[number][1][i] = mark;
+                break;
+            }
+        }
+    }
+}
+
+void Person::AddRetakeSem2(int number, char grade, char type) {
+    int mark = grade - '0';
+    if (type == '1') {
+        for (int i = 0; i < retakeMarksCount2[number][0]; i++) {
+            if (retake_grades2[number][0][i] == 0) {
+                retake_grades2[number][0][i] = mark;
+                break;
+            }
+        }
+    }
+    else if (type == '2') {
+        for (int i = 0; i < retakeMarksCount2[number][1]; i++) {
+            if (retake_grades2[number][1][i] == 0) {
+                retake_grades2[number][1][i] = mark;
+                break;
+            }
+        }
+    }
 }

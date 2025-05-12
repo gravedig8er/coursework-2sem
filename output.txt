@@ -1,10 +1,64 @@
-121	Krugluakov Vlad->islav Dmitrievi->ch 	2024	Computer Scienc->e and Engineeri->ng 	4352
-122	Imangulov Damir-> Marsovich 	2024	Computer Scienc->e and Engineeri->ng 	4362
-131	Stukalkin Micha->il Michailovich 	2024	Applied mathema->tics 	4382
+121	Krugl->uakov-> Vlad->islav-> Dmit->rievi->ch 	2024	Compu->ter S->cienc->e and-> Engi->neeri->ng 	4352
+122	Imang->ulov ->Damir-> Mars->ovich 	2024	Compu->ter S->cienc->e and-> Engi->neeri->ng 	4362
+131	Stuka->lkin ->Micha->il Mi->chail->ovich 	2024	Appli->ed ma->thema->tics 	4382
 
 
-mathematical an->alysis: 4352, 4382
-linear algebra: 4352, 4382
-programming: 4362
-asdasdad: 4362
-asdasd: 4362
+mathe->matic->al an->alysi->s : 4352, 4382
+linea->r alg->ebra : 4352, 4382
+progr->ammin->g : 4362
+injee->r : 4362
+fuck : 4362
+------------------------------
+Student id: 121
+Discipline 1 (mathe->matic->al an->alysi->s):
+	First semester: Exam: 4 | Credit: 0 
+	First semester retakes: Exam: 0 | Credit: 0 
+	Second semester: Exam: 3 | Credit: 0 
+	Second semester retakes: Exam: 0 | Credit: 3 
+
+Discipline 2 (linea->r alg->ebra):
+	First semester: Exam: 0 | Credit: 4 
+	First semester retakes: Exam: 4 | Credit: 0 
+	Second semester: Exam: 4 | Credit: 0 
+	Second semester retakes: Exam: 4 | Credit: 0 
+
+====================================
+
+------------------------------
+Student id: 122
+Discipline 1 (progr->ammin->g):
+	First semester: Exam: 4 | Credit: 0 
+	First semester retakes: Exam: 0 | Credit: 0 
+	Second semester: Exam: 4 | Credit: 0 
+	Second semester retakes: Exam: 0 | Credit: 0 
+
+Discipline 2 (injee->r):
+	First semester: Exam: 0 | Credit: 3 
+	First semester retakes: Exam: 0 | Credit: 0 
+	Second semester: Exam: 0 | Credit: 3 
+	Second semester retakes: Exam: 0 | Credit: 0 
+
+Discipline 3 (fuck):
+	First semester: Exam: 3 | Credit: 0 
+	First semester retakes: Exam: 0 | Credit: 0 
+	Second semester: Exam: 4 | Credit: 0 
+	Second semester retakes: Exam: 0 | Credit: 0 
+
+====================================
+
+------------------------------
+Student id: 131
+Discipline 1 (mathe->matic->al an->alysi->s):
+	First semester: Exam: 3 | Credit: 0 
+	First semester retakes: Exam: 0 | Credit: 0 
+	Second semester: Exam: 4 | Credit: 0 
+	Second semester retakes: Exam: 0 | Credit: 0 
+
+Discipline 2 (linea->r alg->ebra):
+	First semester: Exam: 4 | Credit: 0 
+	First semester retakes: Exam: 0 | Credit: 0 
+	Second semester: Exam: 0 | Credit: 4 
+	Second semester retakes: Exam: 0 | Credit: 0 
+
+====================================
+
