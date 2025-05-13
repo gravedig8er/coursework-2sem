@@ -130,29 +130,24 @@ int main() {
   идти по файлу, записывая номер группы*/
   
   DisciplineBase DB;
-  int currentGroup = 0; // Текущая группа (0 = не задана)
+  int currentGroup = 0; 
 
   while (discipline.get(ch)) {
-    // Если символ — цифра, начинаем читать номер группы
     if (is_digit(ch)) {
       discipline.unget();
       discipline >> currentGroup; // Читаем номер группы
 
-      // Пропускаем все символы до конца строки
       while (discipline.get(ch) && (ch != '\n' && ch != '\r')) {}
     } 
-    // Если текущая группа задана и символ не цифра — читаем дисциплину
     else if (currentGroup != 0) {
       DisciplineNode temp;
       char buffer[N+1] = {};
       int counter = 0;
 
-      // Пропускаем пробелы и табы в начале строки
       while (ch == ' ' || ch == '\t') {
         if (!discipline.get(ch)) break;
       }
 
-      // Читаем название дисциплины до конца строки
       while (ch != '\n' && ch != '\r' && !discipline.eof()) {
         buffer[counter++] = ch;
         if (counter == N) {
@@ -163,13 +158,11 @@ int main() {
         if (!discipline.get(ch)) break;
       }
 
-      // Добавляем оставшиеся символы
       if (counter > 0) {
         buffer[counter] = '\0';
         temp.push_back(String(buffer));
       }
 
-      // Добавляем дисциплину, если она не пустая
       if (temp.GetDir() != nullptr) {
         DisciplineNode* add = DB.find(temp);
         if (!add) {
@@ -179,7 +172,6 @@ int main() {
         Group* findGroup = base.FindGroup(currentGroup);
         if (findGroup) {
           findGroup->AddDiscipl(add);
-          // когда добавил дисциплину нужно увеличить счетчик
           findGroup->IncCountDiscip();
           add->push_back(currentGroup);
         }
@@ -201,7 +193,6 @@ int main() {
   int marks_counter = 0;
   char ch;
   
-  // Предполагается, что std::fstream grades1 открыт и готов к чтению
   while (grades1.get(ch)) {
     while (ch == '\n' || ch == '\r' || ch == ' ') {
       if (!grades1.get(ch)) {
@@ -214,7 +205,6 @@ int main() {
     char next;
     if (!grades1.get(next)) { done = true; break; }
     
-    // Если обнаружен новый студент (строка с двумя цифрами)
     if (is_digit(ch) && is_digit(next)) {
       grades1.unget();
       grades1.unget();
@@ -231,13 +221,11 @@ int main() {
       number = 0; // сброс номера дисциплины для нового студента
     } 
     else {
-      grades1.unget();  // возвращаем второй символ обратно
-      number++;        // увеличиваем номер дисциплины для текущего студента
+      grades1.unget();  
+      number++;        
     }
     
-    // Запоминаем позицию начала блока с оценками
     int start = (int)(grades1.tellg()) - 1;
-    // Подсчёт количества оценок (marks_counter) до табуляции
     while (ch != '\t') {
       if (ch != ' ' && ch != '\n')
         marks_counter++; // увеличиваем счетчик оценок для дисциплины
@@ -246,13 +234,11 @@ int main() {
     }
     if (done) break;
     
-    // Резервируем память под оценки для текущей дисциплины в первом семестре
     student->ReserveMarksSem1(number, marks_counter);
     
     char type = -1;
     if (!grades1.get(type)) { done = true; break; }
     
-    // Возвращаемся к началу блока оценок для повторного чтения
     grades1.seekg(start);
     if (!grades1.get(ch)) { done = true; break; }
     
@@ -269,13 +255,11 @@ int main() {
     marks_counter = 0; // сброс счетчика оценок
     
     if (done) break;
-    // Пропускаем оставшиеся символы (обычно разделитель и перевод строки)
     if (!grades1.get(ch)) { done = true; break; }
     if (!grades1.get(ch)) { done = true; break; }
   }
 } // конец блока первого семестра
 
-// Считывание оценок за второй семестр
 {
   int id = 0;
   int count_discip = 0;
@@ -285,7 +269,6 @@ int main() {
   int marks_counter = 0;
   char ch;
   
-  // Предполагается, что std::fstream grades2 открыт и готов к чтению
   while (grades2.get(ch)) {
     while (ch == '\n' || ch == '\r' || ch == ' ') {
       if (!grades2.get(ch)) {
@@ -328,7 +311,6 @@ int main() {
     }
     if (done) break;
     
-    // Резервируем память под оценки для данного студента по дисциплине во втором семестре
     student->ReserveMarksSem2(number, marks_counter);
     
     char type = -1;
@@ -367,19 +349,15 @@ int main() {
   char ch;
   
   while (retakes1.get(ch)) {
-    // Пропускаем пробельные символы: перевод строки, возврат каретки, пробелы
     while ((ch == '\n' || ch == '\r' || ch == ' ') && retakes1.get(ch)) { }
     if (retakes1.eof())
       break;
     
-    // Сохраняем следующий символ для проверки на новый ID
     char next;
     if (!retakes1.get(next))
       break;
     
-    // Если обнаружены два подряд символа-цифры, значит начинается новый студент
     if (is_digit(ch) && is_digit(next)) {
-      // Возвращаем два считанных символа назад для корректного считывания ID
       retakes1.unget();
       retakes1.unget();
       retakes1 >> id; // Чтение ID студента
@@ -391,15 +369,12 @@ int main() {
       // Вывод отладочной информации о студенте
       //std::cout << "Retakes Semester 1: Student id: " << id << "\n";
       //std::cout << "Retakes Semester 1: Count disciplines: " << count_discip << "\n";
-      // Пропускаем разделительные символы после ID
       while (retakes1.get(ch) && (ch == '\n' || ch == '\r' || ch == ' ')) { }
       retakes1.unget();
     }
     else {
-      // Не найден новый ID: обрабатываем строку дисциплины
       retakes1.unget();
       if (student && number < count_discip) {
-        // Пропускаем лишние пробелы в начале строки дисциплины
         while (ch == ' ' && retakes1.get(ch)) { }
 
         if (ch == '0') {
@@ -407,33 +382,25 @@ int main() {
           //std::cout << "Retakes Semester 1, Discipline " << number 
                     //<< ": No retake (0 encountered)\n";
           number++;
-          // Пропускаем остаток строки до перевода строки или возврата каретки
           while (retakes1.get(ch) && ch != '\n' && ch != '\r') { }
         }
         else if (is_digit(ch)) {
-          // Первая цифра – это оценка пересдачи
           char grade = ch;
-          // Пропускаем символы до символа табуляции (игнорируя пробелы)
           while (retakes1.get(ch) && ch != '\t') {
             if (ch == ' ')
               continue;
           }
-          // Считываем символ, определяющий тип пересдачи ('1' для экзамена, '2' для зачёта)
           char type;
           retakes1.get(type);
 
-          // Вывод отладочной информации по данной дисциплине
           //std::cout << "Retakes Semester 1, Discipline " << number 
                     //<< ": Grade: " << grade << " | Type: " << type << "\n";
 
-          // Добавляем оценку пересдачи в массив
           student->AddRetakeSem1(number, grade, type);
           number++;
-          // Пропускаем остаток строки дисциплины
           while (retakes1.get(ch) && ch != '\n' && ch != '\r') { }
         }
         else {
-          // Если формат строки не соответствует ожиданиям, выводим предупреждение и пропускаем строку
             
           while (retakes1.get(ch) && ch != '\n' && ch != '\r') { }
           number++;
@@ -454,7 +421,6 @@ int main() {
   char ch;
   
   while (retakes2.get(ch)) {
-    // Пропускаем пробельные символы: переход строки, возврат каретки, пробелы
     while ((ch == '\n' || ch == '\r' || ch == ' ') && retakes2.get(ch)) { }
     if (retakes2.eof())
       break;
@@ -481,7 +447,6 @@ int main() {
     else {
       retakes2.unget();
       if (student && number < count_discip) {
-        // Пропускаем лишние пробелы в начале строки дисциплины
         while (ch == ' ' && retakes2.get(ch)) { }
 
         if (ch == '0') {
@@ -540,7 +505,7 @@ int main() {
       PrintStudentsGroupedByYear(output, base);
       break; 
     case '3':
-
+      PrintStudentsGroupedByDirectionAndYear(output, base);
       break;
     default:
       break;
@@ -548,7 +513,7 @@ int main() {
     break;
   }
   case '2':
-
+    PrintGroup(output, base);
     break;
   case '3':
     
@@ -616,7 +581,6 @@ int main() {
 //     output << ": ";
     
     
-//     // Вывод номеров групп в одной строке, разделенных запятыми.
 //     int* groups = currentDiscipl->GetData();
 //     int count = currentDiscipl->GetSize();
 //     for (int i = 0; i < count; i++) {
@@ -638,29 +602,22 @@ int main() {
 //   Group* currentGroup = base.GetHead();
 //   while (currentGroup != nullptr)
 //   {
-//     // Перебираем студентов в группе
 //     Person* currentStudent = currentGroup->GetHead();
 //     while (currentStudent != nullptr)
 //     {
         
 
-//       // --- Детальная информация: дисциплины и оценки ---
 //       output << "------------------------------\n";
 //       output << "Student id: " << currentStudent->GetId() << "\n";
       
-//       // Число дисциплин определяется при считывании оценок
 //       int discCount = currentStudent->GetCountDiscip();
-//       // Получаем список дисциплин, прикреплённый к группе
 //       Discipline* currentDiscip = currentGroup->GetDiscip();
       
 //       for (int i = 0; i < discCount; i++)
 //       {
-//         // Выводим номер дисциплины и её наименование
 //         output << "Discipline " << (i + 1) << " (";
 //         if (currentDiscip != nullptr && currentDiscip->GetObj() != nullptr)
 //         {
-//           // Для вывода полного наименования проходим по цепочке Direction,
-//           // используя разделитель "->"
 //           Direction* d = currentDiscip->GetObj()->GetDir();
 //           bool first = true;
 //           while (d != nullptr)
@@ -678,7 +635,6 @@ int main() {
 //         }
 //         output << "):\n";
         
-//         // --- Вывод оценок для дисциплины i ---
 //         // Первый семестр: обычные оценки (Exam и Credit)
 //         output << "\tFirst semester: ";
 //         output << "Exam: ";
@@ -743,7 +699,6 @@ int main() {
 //         }
 //         output << "\n\n";
         
-//         // Переходим к следующему элементу списка дисциплин
 //         if (currentDiscip != nullptr)
 //           currentDiscip = currentDiscip->GetNext();
 //       }

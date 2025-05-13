@@ -22,7 +22,6 @@ Group::Group(const Group& other) {
   this->direct = nullptr;
   this->discip = nullptr;
 
-  // Копирование списка студентов
   Person* current = other.head;
   while (current != nullptr) {
     Person* newPerson = new Person(*current);
@@ -39,12 +38,10 @@ Group::Group(const Group& other) {
     tail->SetNext(nullptr);
   }
 
-  // Копирование направления (direct)
   if (other.direct != nullptr) {
     this->direct = new Direction(*(other.direct));
   }
 
-  // Копирование списка дисциплин (discip)
   Discipline* otherDiscip = other.discip;
   Discipline* last = nullptr;
   while (otherDiscip != nullptr) {
@@ -62,7 +59,6 @@ Group::Group(const Group& other) {
 }
 
 Group::~Group() {
-  // Освобождаем память для всех объектов Person
   Person* current = head;
   while (current != nullptr) {
     Person* nextPerson = current->GetNext();  
@@ -72,13 +68,11 @@ Group::~Group() {
   head = nullptr;
   tail = nullptr;
   
-  // Освобождаем память для объекта Direction
   if (direct != nullptr) {
     delete direct;
     direct = nullptr;
   }
   
-  // Освобождаем память для списка Discipline
   Discipline* currentDisc = discip;
   while (currentDisc != nullptr) {
     Discipline* nextDisc = currentDisc->GetNext();

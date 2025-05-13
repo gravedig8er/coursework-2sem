@@ -6,7 +6,6 @@ DisciplineBase::DisciplineBase() {
 }
 
 DisciplineBase::~DisciplineBase() {
-  // Освобождаем всю цепочку DisciplineNode
   DisciplineNode* current = head;
   while (current != nullptr) {
     DisciplineNode* next = current->GetNext();

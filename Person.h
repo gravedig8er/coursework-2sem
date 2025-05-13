@@ -47,6 +47,7 @@ public:
   void AddGradeSem2(int number, char grade, char type);
   void AddRetakeSem1(int number, char grade, char type);
   void AddRetakeSem2(int number, char grade, char type); 
-  int GetCountDiscip() const { return count_discip; } 
+  int GetCountDiscip() const { return count_discip; }
+  int GetMark(int disc_index, int semester, char type, bool isRetake = false) const;
   void ClearDisciplines();
 };

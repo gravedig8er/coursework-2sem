@@ -8,20 +8,18 @@ DisciplineNode::DisciplineNode() {
 }
 
 DisciplineNode::~DisciplineNode() {
-  // Освобождаем память для string
   if (string != nullptr) {
     delete string;
     string = nullptr;
   }
   
-  // Освобождаем память для LGroup
   if (LGroup != nullptr) {
     delete[] LGroup;
     LGroup = nullptr;
   }
   
-  // Не удаляем pNext, так как это делает DisciplineBase
 }
+
 DisciplineNode::DisciplineNode(DisciplineNode& other) {
   if (other.string != nullptr) {
     string = new Direction(*other.string);
@@ -29,9 +27,8 @@ DisciplineNode::DisciplineNode(DisciplineNode& other) {
     string = nullptr;
   }
 
-  pNext = nullptr; // Устанавливаем в nullptr, так как pNext обрабатывается отдельно
+  pNext = nullptr; 
 
-  // Копирование LGroup и size
   size = other.size;
   if (size > 0) {
     LGroup = new int[size];
@@ -42,7 +39,6 @@ DisciplineNode::DisciplineNode(DisciplineNode& other) {
     LGroup = nullptr;
   }
 
-  // Копирование pNext через глубокое копирование
   if (other.pNext != nullptr) {
     pNext = new DisciplineNode(*other.pNext);
   } else {
@@ -78,7 +74,6 @@ bool DisciplineNode::operator==(const DisciplineNode& other) const {
   if ((this->string == nullptr) != (other.string == nullptr))
       return false;
 
-  // Теперь оба ненулевые — будем сравнивать цепочку объектов типа Direction.
   const Direction* current1 = this->string;
   const Direction* current2 = other.string;
   while (current1 != nullptr && current2 != nullptr) {

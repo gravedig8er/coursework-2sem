@@ -8,13 +8,11 @@ Person::Person() {
   this->fio = nullptr;
   this->direct = nullptr;
 
-  // Оценки за первый семестр
   this->grades1 = nullptr;
   this->retake_grades1 = nullptr;
   this->examMarksCount1 = nullptr;
   this->retakeMarksCount1 = nullptr;
 
-  // Оценки за второй семестр
   this->grades2 = nullptr;
   this->retake_grades2 = nullptr;
   this->examMarksCount2 = nullptr;
@@ -31,7 +29,6 @@ Person::Person(const Person &other)
       count_discip(other.count_discip),
       pNext(nullptr)
 {
-    // Копируем fio и direct
     if (other.fio != nullptr)
         this->fio = new FullName(*other.fio);
     else
@@ -42,7 +39,6 @@ Person::Person(const Person &other)
     else
         this->direct = nullptr;
         
-    // --- Копирование первого семестра ---
     if (other.grades1 != nullptr && other.count_discip > 0) {
         grades1 = new int**[other.count_discip];
         examMarksCount1 = new int*[other.count_discip];
@@ -91,7 +87,6 @@ Person::Person(const Person &other)
         retakeMarksCount1 = nullptr;
     }
     
-    // --- Копирование второго семестра ---
     if (other.grades2 != nullptr && other.count_discip > 0) {
         grades2 = new int**[other.count_discip];
         examMarksCount2 = new int*[other.count_discip];
@@ -142,7 +137,6 @@ Person::Person(const Person &other)
 }
 
 Person::~Person() {
-    // Освобождаем fio и direct
     if (fio != nullptr) {
         delete fio;
         fio = nullptr;
@@ -152,7 +146,6 @@ Person::~Person() {
         direct = nullptr;
     }
     
-    // --- Освобождение памяти для первого семестра ---
     if (grades1 != nullptr) {
         for (int i = 0; i < count_discip; ++i) {
             if (grades1[i] != nullptr) {
@@ -199,8 +192,8 @@ Person::~Person() {
         delete [] retakeMarksCount1;
         retakeMarksCount1 = nullptr;
     }
-    
-    // --- Освобождение памяти для второго семестра ---
+
+    // чистим память
     if (grades2 != nullptr) {
         for (int i = 0; i < count_discip; ++i) {
             if (grades2[i] != nullptr) {
@@ -248,7 +241,6 @@ Person::~Person() {
         retakeMarksCount2 = nullptr;
     }
     
-    // Освобождаем остальные поля, если они были выделены (например, pNext, если требуется)
 }
 
 
@@ -552,4 +544,53 @@ void Person::AddRetakeSem2(int number, char grade, char type) {
             }
         }
     }
+}
+
+
+int Person::GetMark(int disc_index, int semester, char type, bool isRetake) const {
+    // Проверка корректности индекса дисциплины
+    if (disc_index < 0 || disc_index >= count_discip)
+        return 0; // или сигнал об ошибке
+
+    // Выбираем соответствующий блок оценок и количества оценок
+    int*** gradesArray = nullptr;
+    int** marksCountArray = nullptr;
+
+    // Для первого семестра:
+    if (semester == 1) {
+        if (isRetake) {
+            gradesArray = retake_grades1;
+            marksCountArray = retakeMarksCount1;
+        } else {
+            gradesArray = grades1;
+            marksCountArray = examMarksCount1;
+        }
+    }
+    // Для второго семестра:
+    else if (semester == 2) {
+        if (isRetake) {
+            gradesArray = retake_grades2;
+            marksCountArray = retakeMarksCount2;
+        } else {
+            gradesArray = grades2;
+            marksCountArray = examMarksCount2;
+        }
+    } else {
+        return 0;
+    }
+
+    // type == '1' означает экзамен (или пересдача экзамена), индекс 0
+    // type == '2' означает зачет (или пересдача зачета), индекс 1
+    int typeIndex = (type == '1') ? 0 : 1;
+
+    // Проходим по массиву оценок для заданной дисциплины (gradesArray[disc_index][typeIndex])
+    int count = marksCountArray[disc_index][typeIndex];
+    // Ищем первую ячейку, которая не равна нулю.
+    for (int i = 0; i < count; i++) {
+        if (gradesArray[disc_index][typeIndex][i] != 0) {
+            return gradesArray[disc_index][typeIndex][i];
+        }
+    }
+    // Если ни одна оценка не найдена, возвращаем 0 (или можно вернуть специальное значение)
+    return 0;
 }
