@@ -18,7 +18,7 @@ FullName.o: FullName.cpp FullName.h String.h config.h
 	g++ -c FullName.cpp
 Group.o: Group.cpp Group.h Person.h config.h Direction.h DisciplineNode.h Discipline.h
 	g++ -c Group.cpp
-MyFunctions.o: MyFunctions.cpp MyFunctions.h config.h
+MyFunctions.o: MyFunctions.cpp MyFunctions.h config.h Database.h String.h
 	g++ -c MyFunctions.cpp
 Person.o: Person.cpp Person.h FullName.h Direction.h config.h
 	g++ -c Person.cpp

@@ -28,8 +28,11 @@ public:
   void SetGroup(int number) { this->number = number; }
   void AddStudent(Person temp);
   void SetDirect(Direction* dir);
+  void SetYear(int year) { this->year = year; }
+  int GetYear() const { return year; }
   void AddDiscipl(DisciplineNode* temp);
   Person* GetHead() const { return head; }
+  Direction* GetDirection() const { return direct; }
   int GetCountDiscip() const { return count_discip; }
   Discipline* GetDiscip() const { return discip; }
   void IncCountDiscip() { count_discip++; }
