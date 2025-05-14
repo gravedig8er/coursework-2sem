@@ -588,3 +588,190 @@ void PrintGroup(std::fstream& output,  const Database &base) {
           break;
     }
 }
+
+void PrintConsole( DisciplineNode* dnode) {
+    if (dnode == nullptr) {
+        std::cout << "<empty>";
+        return;
+    }
+    // Получаем указатель на первый Direction в цепочке
+     Direction* dir = dnode->GetDir();
+    while (dir != nullptr) {
+        // Извлекаем строку из объекта Direction
+        String str = dir->GetStr();
+        if (str.GetLine()[0] != '\0') { 
+            std::cout << str.GetLine();
+            // Если есть следующий блок – выводим разделитель
+            if (dir->GetNext() != nullptr) {
+                std::cout << "->";
+            } else {
+                std::cout << ' ';
+            }
+        }
+        // Переход к следующему Direction в цепочке
+        dir = dir->GetNext();
+    }
+}
+
+void PrintDiscipline(std::fstream &output, const Database &base) {
+    // 1. Собираем список уникальных дисциплин из всех групп.
+    int maxDisc = 0;
+    for (Group *g = base.GetHead(); g != nullptr; g = g->GetNext()) {
+        for (Discipline *d = g->GetDiscip(); d != nullptr; d = d->GetNext()) {
+            maxDisc++;
+        }
+    }
+    if (maxDisc == 0) {
+        std::cout << "Нет дисциплин в базе.\n";
+        return;
+    }
+    Discipline **uniqueArr = new Discipline*[maxDisc];
+    int uniqueCount = 0;
+    for (Group *g = base.GetHead(); g != nullptr; g = g->GetNext()) {
+        for (Discipline *d = g->GetDiscip(); d != nullptr; d = d->GetNext()) {
+            bool found = false;
+            for (int i = 0; i < uniqueCount; i++) {
+                // Оператор == должен сравнивать дисциплины (на основании внутренней цепочки, например, через GetObj())
+                if (*uniqueArr[i] == *d) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                uniqueArr[uniqueCount++] = d;
+            }
+        }
+    }
+    
+    // 2. Выводим список дисциплин для выбора.
+    std::cout << "Список дисциплин:\n";
+    for (int i = 0; i < uniqueCount; i++) {
+        std::cout << i + 1 << ". ";
+        // Предполагается, что у объекта Discipline имеется метод GetObj(),
+        // который возвращает указатель на DisciplineNode – цепочку с названием дисциплины.
+        PrintConsole(uniqueArr[i]->GetObj());
+        std::cout << "\n";
+    }
+    int chosenIndex = 0;
+    std::cout << "Введите номер дисциплины: ";
+    std::cin >> chosenIndex;
+    if (chosenIndex < 1 || chosenIndex > uniqueCount) {
+        std::cout << "Неверный номер дисциплины!\n";
+        delete [] uniqueArr;
+        return;
+    }
+    Discipline *selectedDiscipline = uniqueArr[chosenIndex - 1];
+    delete [] uniqueArr;
+    
+    // 3. Запрашиваем номер семестра.
+    int semester = 0;
+    std::cout << "Введите номер семестра (1 или 2): ";
+    std::cin >> semester;
+    if (semester != 1 && semester != 2) {
+        std::cout << "Неверный номер семестра!\n";
+        return;
+    }
+    
+    // 4. Собираем все группы из базы в динамический массив.
+    int groupCount = 0;
+    for (Group *g = base.GetHead(); g != nullptr; g = g->GetNext())
+        groupCount++;
+    if (groupCount == 0) {
+        std::cout << "Нет групп в базе.\n";
+        return;
+    }
+    Group **groupArr = new Group*[groupCount];
+    int gi = 0;
+    for (Group *g = base.GetHead(); g != nullptr; g = g->GetNext())
+        groupArr[gi++] = g;
+    
+    // Пузырьковая сортировка групп по номеру (Group::GetNumber())
+    for (int i = 0; i < groupCount - 1; i++) {
+        for (int j = 0; j < groupCount - i - 1; j++) {
+            if (groupArr[j]->GetNumber() > groupArr[j + 1]->GetNumber()) {
+                Group *tmp = groupArr[j];
+                groupArr[j] = groupArr[j + 1];
+                groupArr[j + 1] = tmp;
+            }
+        }
+    }
+    
+    output << "Результаты по дисциплине: ";
+    PrintDisciplineChain(output, selectedDiscipline->GetObj());
+    output << "\n\n";
+    // 5. Для каждой группы проверяем, содержится ли выбранная дисциплина.
+    for (int i = 0; i < groupCount; i++) {
+        Group *g = groupArr[i];
+        int discIndex = -1;
+        int curIndex = 0;
+        // Перебираем цепочку дисциплин группы.
+        for (Discipline *d = g->GetDiscip(); d != nullptr; d = d->GetNext(), curIndex++) {
+            if (*d == *selectedDiscipline) {
+                discIndex = curIndex;
+                break;
+            }
+        }
+        if (discIndex == -1)
+            continue; // Группа не содержит выбранную дисциплину.
+        
+        output << "Группа " << g->GetNumber() << " (год " << g->GetYear() << "):\n";
+        
+        // 6. Собираем студентов группы в динамический массив.
+        int stuCount = 0;
+        for (Person *p = g->GetHead(); p != nullptr; p = p->GetNext())
+            stuCount++;
+        if (stuCount == 0) {
+            output << "  Нет студентов в группе.\n";
+            continue;
+        }
+        Person **stuArr = new Person*[stuCount];
+        int si = 0;
+        for (Person *p = g->GetHead(); p != nullptr; p = p->GetNext())
+            stuArr[si++] = p;
+        
+        // Пузырьковая сортировка студентов по ФИО; CompareFullName должен сравнивать объекты типа FullName.
+        for (int a = 0; a < stuCount - 1; a++) {
+            for (int b = 0; b < stuCount - a - 1; b++) {
+                if (CompareFullName(stuArr[b]->GetFio(), stuArr[b + 1]->GetFio()) > 0) {
+                    Person *tmp = stuArr[b];
+                    stuArr[b] = stuArr[b + 1];
+                    stuArr[b + 1] = tmp;
+                }
+            }
+        }
+        
+        // 7. Выводим обычные оценки для выбранной дисциплины в данном семестре.
+        output << "  Обычные оценки:\n";
+        for (int a = 0; a < stuCount; a++) {
+            Person *p = stuArr[a];
+            output << "\tID: " << p->GetId() << "\t";
+            PrintFullName(output, p->GetFio());
+            output << "\tОценка: ";
+            int mark = p->GetMark(discIndex, semester, '1', false);
+            if (mark == 0)
+                output << "-";
+            else
+                output << mark;
+            output << "\n";
+        }
+        
+        // 8. Выводим оценки за пересдачи для выбранной дисциплины.
+        output << "  Оценки за пересдачи:\n";
+        for (int a = 0; a < stuCount; a++) {
+            Person *p = stuArr[a];
+            output << "\tID: " << p->GetId() << "\t";
+            PrintFullName(output, p->GetFio());
+            output << "\tОценка: ";
+            int retake = p->GetMark(discIndex, semester, '1', true);
+            if (retake == 0)
+                output << "-";
+            else
+                output << retake;
+            output << "\n";
+        }
+        output << "\n";
+        delete [] stuArr;
+    }
+    output << "====================================\n\n";
+    delete [] groupArr;
+}

@@ -1,24 +1,6 @@
-Результаты группы 4362 (год поступления: 2024):
+Результаты по дисциплине: piaos 
 
-Дисциплина: brac :
-Семестр 1:
-  Обычные оценки:
-	ID: 122	Amangulov Damir-> Marsovich 	Оценка: 4
-  Оценки за пересдачи:
-	ID: 122	Amangulov Damir-> Marsovich 	Оценка: -
-Семестр 2:
-  Обычные оценки:
-	ID: 122	Amangulov Damir-> Marsovich 	Оценка: 4
-  Оценки за пересдачи:
-	ID: 122	Amangulov Damir-> Marsovich 	Оценка: -
-
-Дисциплина: piaos :
-Семестр 1:
-  Обычные оценки:
-	ID: 122	Amangulov Damir-> Marsovich 	Оценка: 4
-  Оценки за пересдачи:
-	ID: 122	Amangulov Damir-> Marsovich 	Оценка: -
-Семестр 2:
+Группа 4362 (год 2024):
   Обычные оценки:
 	ID: 122	Amangulov Damir-> Marsovich 	Оценка: 3
   Оценки за пересдачи:

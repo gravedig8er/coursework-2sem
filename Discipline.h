@@ -13,5 +13,6 @@ public:
   DisciplineNode* GetObj() const { return obj; }
 
   void SetNext(Discipline* temp);
-  
+  bool operator==(const Discipline &other) const;
+  Discipline& operator=(const Discipline &other);
 };

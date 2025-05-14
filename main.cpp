@@ -516,7 +516,7 @@ int main() {
     PrintGroup(output, base);
     break;
   case '3':
-    
+    PrintDiscipline(output, base);
     break;
   default:
     break;
