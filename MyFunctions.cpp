@@ -34,30 +34,8 @@ void PrintDirection(std::fstream& output, const Direction* dir) {
       }
 }
 
-void PrintDisciplineChain(std::fstream& output, const Discipline* disc) {
-    if (!disc)
-        return;
-    // Получаем внутренний узел, содержащий информацию о дисциплине.
-    // Метод GetObj() определён как: DisciplineNode* GetObj() const { return obj; }
-    // Чтобы избежать потери квалификатора const, сохраняем в const DisciplineNode*
-     DisciplineNode* dnode = disc->GetObj();
-    while (dnode != nullptr) {
-        // Получаем указатель на цепочку строк, описывающих название дисциплины.
-        // В DisciplineNode поле string (тип Direction*) хранит эту цепочку.
-        Direction* dir = dnode->GetDir();
-        // Выводим цепочку (например, "Math->Algebra")
-        PrintDirection(output, dir);
-        // Получаем следующий узел. 
-        // Так как GetNext() возвращает DisciplineNode* (без const),
-        // применяем static_cast, чтобы получить const DisciplineNode*
-        DisciplineNode* next = dnode->GetNext();
-        if (next != nullptr)
-            output << "->";
-        else
-            output << " ";
-        dnode = next;
-    }
-}
+
+
 
 int MyStrCmp(const char* s1, const char* s2) {
     while (*s1 != '\0' && *s2 != '\0' && *s1 == *s2) {
@@ -367,36 +345,49 @@ void PrintStudentsGroupedByDirectionAndYear(std::fstream& output, const Database
     }
 }
 
+// Функция вывода цепочки названия дисциплины (связанных блоков) по DisciplineNode.
+void PrintDisciplineChain(std::fstream& output,  DisciplineNode* dnode) {
+    if(dnode != nullptr) {
+        // Выводим только первый блок
+         Direction* dir = dnode->GetDir();
+        PrintDirection(output, dir);
+    }
+}
 
+// Функция для вывода результатов за весь учебный курс для выбранной группы.
+// Выводятся: название (актуальная) дисциплины, затем для каждого студента (отсортированного по ФИО):
+//   - ID, ФИО, обычная оценка по дисциплине,
+//   - ID, ФИО, оценка за пересдачу.
 void PrintGroupFullCycleResults(const Group* group, std::fstream& output) {
     output << "Результаты группы " << group->GetNumber() 
            << " (год поступления: " << group->GetYear() << "):\n\n";
     
-    // Предположим, что group->GetDiscip() возвращает указатель на объект Discipline,
-    // который представляет первую дисциплину в цепочке.
+    // Получаем цепочку предметов: каждый объект Discipline представляет один предмет
+     
     Discipline* disc = group->GetDiscip();
-    int discIndex = 0; // индекс дисциплины, соответствующий порядку резервирования оценок
+    int discIndex = 0;  // номер предмета для вызова GetMark()
     
-    while(disc != nullptr) {
+    while (disc != nullptr) {
         output << "Дисциплина: ";
-        // Выводим имя дисциплины. Предполагается, что PrintDisciplineChain умеет работать с объектом Discipline.
-        PrintDisciplineChain(output, disc);
+        // Выводим наименование предмета; 
+        // предполагается, что метод GetObj() возвращает цепочку внутренних блоков (DisciplineNode*)
+        PrintDisciplineChain(output, disc->GetObj());
         output << ":\n";
         
-        // Подсчитываем количество студентов в группе
+        // Собираем студентов группы в массив и сортируем их по ФИО
         int studentCount = 0;
-        for(Person* p = group->GetHead(); p != nullptr; p = p->GetNext())
+        for (Person* p = group->GetHead(); p != nullptr; p = p->GetNext())
             studentCount++;
         
-        if(studentCount == 0) {
+        if (studentCount == 0) {
             output << "  Нет студентов в группе.\n";
         } else {
             Person** studArr = new Person*[studentCount];
-            int index = 0;
-            for(Person* p = group->GetHead(); p != nullptr; p = p->GetNext())
-                studArr[index++] = p;
+            int idx = 0;
+            for (Person* p = group->GetHead(); p != nullptr; p = p->GetNext())
+                studArr[idx++] = p;
             
-            // Сортировка студентов по полному ФИО (пузырьковая сортировка)
+            // Сортировка пузырьковым методом по ФИО
             for (int i = 0; i < studentCount - 1; i++) {
                 for (int j = 0; j < studentCount - i - 1; j++) {
                     if (CompareFullName(studArr[j]->GetFio(), studArr[j+1]->GetFio()) > 0) {
@@ -407,52 +398,98 @@ void PrintGroupFullCycleResults(const Group* group, std::fstream& output) {
                 }
             }
             
-            // Для каждого студента выводим ФИО и оценку по текущей дисциплине.
+            // Вывод результатов за первый семестр:
+            output << "Семестр 1:\n";
+            output << "  Обычные оценки:\n";
             for (int i = 0; i < studentCount; i++) {
                 Person* p = studArr[i];
-                output << "\t";
+                output << "\tID: " << p->GetId() << "\t";
                 PrintFullName(output, p->GetFio());
-                output << "\t";
-                // Вызываем GetMark. Так как оценки резервируются по порядковому индексу дисциплины,
-                // передаём discIndex, фиксируем семестр как 1 и тип '1' (например, экзамен).
-                int mark = p->GetMark(discIndex, 1, '1');
-                output << mark;
+                output << "\tОценка: ";
+                int mark1 = p->GetMark(discIndex, 1, '1', false);
+                if (mark1 == 0)
+                    output << "-";
+                else
+                    output << mark1;
+
+                output << "\n";
+            }
+            output << "  Оценки за пересдачи:\n";
+            for (int i = 0; i < studentCount; i++) {
+                Person* p = studArr[i];
+                output << "\tID: " << p->GetId() << "\t";
+                PrintFullName(output, p->GetFio());
+                output << "\tОценка: ";
+                int retake1 = p->GetMark(discIndex, 1, '1', true);
+                if (retake1 == 0)
+                    output << "-";
+                else
+                    output << retake1;
+
                 output << "\n";
             }
             
+            // Вывод результатов за второй семестр:
+            output << "Семестр 2:\n";
+            output << "  Обычные оценки:\n";
+            for (int i = 0; i < studentCount; i++) {
+                Person* p = studArr[i];
+                output << "\tID: " << p->GetId() << "\t";
+                PrintFullName(output, p->GetFio());
+                output << "\tОценка: ";
+                int mark2 = p->GetMark(discIndex, 2, '1', false);
+                if (mark2 == 0)
+                    output << "-";
+                else
+                    output << mark2;
+                output << "\n";
+            }
+            output << "  Оценки за пересдачи:\n";
+            for (int i = 0; i < studentCount; i++) {
+                Person* p = studArr[i];
+                output << "\tID: " << p->GetId() << "\t";
+                PrintFullName(output, p->GetFio());
+                output << "\tОценка: ";
+                int retake2 = p->GetMark(discIndex, 2, '1', true);
+                if (retake2 == 0)
+                    output << "-";
+                else
+                    output << retake2;
+                output << "\n";
+            }
             delete [] studArr;
         }
         output << "\n";
-        discIndex++;  // увеличиваем индекс дисциплины для следующей
-        // Переходим к следующей дисциплине.
-        // Предполагаем, что в классе Discipline определён метод GetNext(), который возвращает следующий объект Discipline в цепочке.
+        discIndex++;                // Увеличиваем индекс, т.к. следующий объект Discipline соответствует следующему предмету
         disc = disc->GetNext();
     }
     output << "====================================\n\n";
 }
 
-void PrintGroupSemesterResults(const Group* group, int semester, std::fstream& output) {
+// Функция для вывода результатов за конкретный семестр для выбранной группы.
+// Логика аналогична PrintGroupFullCycleResults, но номер семестра передается параметром.
+void PrintGroupSemesterResults( Group* group, int semester, std::fstream& output) {
     output << "Результаты группы " << group->GetNumber() 
            << " (год поступления: " << group->GetYear() << "), семестр " << semester << ":\n\n";
     
-    const Discipline* disc = group->GetDiscip();
+       Discipline* disc = group->GetDiscip();
     int discIndex = 0;
     while(disc != nullptr) {
         output << "Дисциплина: ";
-        PrintDisciplineChain(output, disc);
+        PrintDisciplineChain(output, disc->GetObj());
         output << ":\n";
         
         int studentCount = 0;
-        for(Person* p = group->GetHead(); p != nullptr; p = p->GetNext())
+        for (Person* p = group->GetHead(); p != nullptr; p = p->GetNext())
             studentCount++;
         
         if(studentCount == 0) {
             output << "  Нет студентов в группе.\n";
         } else {
             Person** studArr = new Person*[studentCount];
-            int index = 0;
-            for(Person* p = group->GetHead(); p != nullptr; p = p->GetNext())
-                studArr[index++] = p;
+            int idx = 0;
+            for (Person* p = group->GetHead(); p != nullptr; p = p->GetNext())
+                studArr[idx++] = p;
             
             for (int i = 0; i < studentCount - 1; i++) {
                 for (int j = 0; j < studentCount - i - 1; j++) {
@@ -464,16 +501,33 @@ void PrintGroupSemesterResults(const Group* group, int semester, std::fstream& o
                 }
             }
             
+            output << "Обычные оценки:\n";
             for (int i = 0; i < studentCount; i++) {
                 Person* p = studArr[i];
-                output << "\t";
+                output << "\tID: " << p->GetId() << "\t";
                 PrintFullName(output, p->GetFio());
-                output << "\t";
-                int mark = p->GetMark(discIndex, semester, '1');
-                output << mark;
+                output << "\tОценка: ";
+                int mark = p->GetMark(discIndex, semester, '1', false);
+                if (mark == 0)
+                    output << "-";
+                else
+                    output << mark;
                 output << "\n";
             }
             
+            output << "Оценки за пересдачи:\n";
+            for (int i = 0; i < studentCount; i++) {
+                Person* p = studArr[i];
+                output << "\tID: " << p->GetId() << "\t";
+                PrintFullName(output, p->GetFio());
+                output << "\tОценка: ";
+                int retakeMark = p->GetMark(discIndex, semester, '1', true);
+                if (retakeMark == 0)
+                    output << "-";
+                else
+                    output << retakeMark;
+                output << "\n";
+            }
             delete [] studArr;
         }
         output << "\n";
@@ -483,17 +537,17 @@ void PrintGroupSemesterResults(const Group* group, int semester, std::fstream& o
     output << "====================================\n\n";
 }
 
-// Вспомогательная функция для получения группы по индексу (начиная с 1)
+// спомогательная функция для получения группы по индексу (начиная с 1)
 Group* GetGroupByIndex(const Database &db, int index) {
     int count = 1;
     for (Group* g = db.GetHead(); g != nullptr; g = g->GetNext(), count++) {
-        if(count == index)
+        if (count == index)
             return g;
     }
     return nullptr;
 }
 
-void PrintGroup(std::fstream& output, const Database &base) {
+void PrintGroup(std::fstream& output,  const Database &base) {
     std::cout << "Список групп:\n";
     int index = 1;
     for(Group* g = base.GetHead(); g != nullptr; g = g->GetNext(), index++) {

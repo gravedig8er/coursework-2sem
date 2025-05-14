@@ -548,49 +548,35 @@ void Person::AddRetakeSem2(int number, char grade, char type) {
 
 
 int Person::GetMark(int disc_index, int semester, char type, bool isRetake) const {
-    // Проверка корректности индекса дисциплины
     if (disc_index < 0 || disc_index >= count_discip)
-        return 0; // или сигнал об ошибке
+        return 0;
 
-    // Выбираем соответствующий блок оценок и количества оценок
-    int*** gradesArray = nullptr;
-    int** marksCountArray = nullptr;
-
-    // Для первого семестра:
+    int*** gradesArr = nullptr;
+    int** marksCount = nullptr;
     if (semester == 1) {
         if (isRetake) {
-            gradesArray = retake_grades1;
-            marksCountArray = retakeMarksCount1;
+            gradesArr = retake_grades1;
+            marksCount = retakeMarksCount1;
         } else {
-            gradesArray = grades1;
-            marksCountArray = examMarksCount1;
+            gradesArr = grades1;
+            marksCount = examMarksCount1;
         }
-    }
-    // Для второго семестра:
-    else if (semester == 2) {
+    } else if (semester == 2) {
         if (isRetake) {
-            gradesArray = retake_grades2;
-            marksCountArray = retakeMarksCount2;
+            gradesArr = retake_grades2;
+            marksCount = retakeMarksCount2;
         } else {
-            gradesArray = grades2;
-            marksCountArray = examMarksCount2;
+            gradesArr = grades2;
+            marksCount = examMarksCount2;
         }
     } else {
         return 0;
     }
-
-    // type == '1' означает экзамен (или пересдача экзамена), индекс 0
-    // type == '2' означает зачет (или пересдача зачета), индекс 1
     int typeIndex = (type == '1') ? 0 : 1;
-
-    // Проходим по массиву оценок для заданной дисциплины (gradesArray[disc_index][typeIndex])
-    int count = marksCountArray[disc_index][typeIndex];
-    // Ищем первую ячейку, которая не равна нулю.
-    for (int i = 0; i < count; i++) {
-        if (gradesArray[disc_index][typeIndex][i] != 0) {
-            return gradesArray[disc_index][typeIndex][i];
-        }
+    int cnt = marksCount[disc_index][typeIndex];
+    for (int i = 0; i < cnt; i++) {
+        if (gradesArr[disc_index][typeIndex][i] != 0)
+            return gradesArr[disc_index][typeIndex][i];
     }
-    // Если ни одна оценка не найдена, возвращаем 0 (или можно вернуть специальное значение)
     return 0;
 }
